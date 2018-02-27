@@ -3,7 +3,7 @@
     <arg name="marker_size" default="6.0" />
     <arg name="max_new_marker_error" default="0.08" />
     <arg name="max_track_error" default="0.2" />
-    <arg name="cam_image_topic" default="/camera/rgb/image_rect_color" />
+    <arg name="cam_image_topic" default="/camera/rgb/image_raw" />
     <arg name="cam_info_topic" default="/camera/rgb/camera_info" />
     <arg name="output_frame" default="/camera_link" />
     <arg name="bundle_files" default="$(find birl_kitting_experiment)/bundles/box_0_1_2_3.xml $(find birl_kitting_experiment)/bundles/box_8_9_10_12.xml $(find birl_kitting_experiment)/bundles/box_4_5_6_7.xml $(find birl_kitting_experiment)/bundles/box_13_14.xml $(find birl_kitting_experiment)/bundles/box_11_15.xml" />
@@ -12,7 +12,7 @@
     <node name="ar_track_alvar" pkg="ar_track_alvar" type="findMarkerBundlesNoKinect" respawn="false" output="screen"
         args="$(arg marker_size) $(arg max_new_marker_error) $(arg max_track_error) $(arg cam_image_topic) $(arg cam_info_topic) $(arg output_frame) $(arg bundle_files)" />
 
-    <node name="publishMarkersInfo" pkg="birl_kitting_experiment" type="alvar_marker_to_baxter_picking_pose.py" />
+    <!--<node name="publishMarkersInfo" pkg="birl_kitting_experiment" type="alvar_marker_to_baxter_picking_pose.py" />-->
 
     <node pkg="tf" type="static_transform_publisher" name="pub_tf_baxterBase2cameraLink" args=" 0.16000 0.055 0.275439  0.026372 0.029066 0.013821 0.999134 /base /camera_link 100 " />
 </launch>
