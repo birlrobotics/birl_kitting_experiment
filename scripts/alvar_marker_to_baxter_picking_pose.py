@@ -76,6 +76,7 @@ if __name__ == '__main__':
     base_to_cam_mat = listener.fromTranslationRotation(*base_to_cam) 
 
     broadcaster = tf.TransformBroadcaster()
+    pub = rospy.Publisher("baxter_available_picking_pose", AlvarMarkers, queue_size=10)
 
     r = rospy.Rate(10)
     while not rospy.is_shutdown():
@@ -102,13 +103,23 @@ if __name__ == '__main__':
                 if marker.id in handcoded_marker_compensation:
                     base_to_marker = numpy.dot(base_to_marker, handcoded_marker_compensation[marker.id])
                 base_to_marker = transform_into_baxter_picking_space(base_to_marker) 
+                trans = translation_from_matrix(base_to_marker)
+                quat = quaternion_from_matrix(base_to_marker)
                 broadcaster.sendTransform(
-                    translation_from_matrix(base_to_marker),
-                    quaternion_from_matrix(base_to_marker),
+                    trans,
+                    quat,
                     rospy.Time.now(),
                     'baxter_picking_pose_%s'%marker.id,
                     'base', 
                 )
+                marker.pose.pose.position.x = trans[0]
+                marker.pose.pose.position.y = trans[1]
+                marker.pose.pose.position.z = trans[2]
+                marker.pose.pose.orientation.x = quat[0]
+                marker.pose.pose.orientation.y = quat[1]
+                marker.pose.pose.orientation.z = quat[2]
+                marker.pose.pose.orientation.w = quat[3]
+            pub.publish(msg)
 
         try:
             r.sleep()
