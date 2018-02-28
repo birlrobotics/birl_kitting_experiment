@@ -13,6 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  smach_based_introspection_framework
+  smach
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,7 +109,7 @@ catkin_python_setup()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES birl_kitting_experiment
-#  CATKIN_DEPENDS ar_track_alvar ar_track_alvar_msgs roscpp rospy std_msgs
+ CATKIN_DEPENDS ar_track_alvar ar_track_alvar_msgs roscpp rospy std_msgs smach_based_introspection_framework smach
 #  DEPENDS system_lib
 )
 

@@ -51,16 +51,22 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>ar_track_alvar</build_depend>
   <build_depend>ar_track_alvar_msgs</build_depend>
+  <build_depend>smach</build_depend>
+  <build_depend>smach_based_introspection_framework</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_export_depend>ar_track_alvar</build_export_depend>
   <build_export_depend>ar_track_alvar_msgs</build_export_depend>
+  <build_export_depend>smach</build_export_depend>
+  <build_export_depend>smach_based_introspection_framework</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
   <exec_depend>ar_track_alvar</exec_depend>
   <exec_depend>ar_track_alvar_msgs</exec_depend>
+  <exec_depend>smach</exec_depend>
+  <exec_depend>smach_based_introspection_framework</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
