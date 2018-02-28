@@ -11,16 +11,24 @@ from tf.transformations import (
 )
 import baxter_interface
 import numpy
+import os
+from sklearn.externals import joblib
+
+dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
+dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models')
 
 pick_hover_height = 0.10
 place_step_size = 0.07
 place_hover_height = 0.10
 
-class GoToHomePose(smach.State):
+class MoveToHomePose(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Successful'])
         self.state_no = 1 # Skill tag
         self.depend_on_prev_state = False # Set this flag accordingly
+
+    def get_dmp_model(self):
+        return joblib.load(os.path.join(dmp_model_dir, 'pre_place_to_home')) 
 
     def get_pose_goal(self): # Goal getter, will be reused in executing recovery policy
         home_pose = Pose()
@@ -70,6 +78,9 @@ class MoveToPrePickPoseWithEmptyHand(smach.State):
         smach.State.__init__(self, outcomes=['Successful'])
         self.state_no = 3 # Skill tag
         self.depend_on_prev_state = True # Set this flag accordingly
+
+    def get_dmp_model(self):
+        return joblib.load(os.path.join(dmp_model_dir, 'home_to_pre_pick')) 
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
@@ -160,6 +171,9 @@ class MoveToPrePlacePoseWithFullHand(smach.State):
         smach.State.__init__(self, outcomes=['Successful'])
         self.state_no = 7 # Skill tag
         self.depend_on_prev_state = True # Set this flag accordingly
+
+    def get_dmp_model(self):
+        return joblib.load(os.path.join(dmp_model_dir, 'pre_pick_to_pre_place')) 
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePlacePose.place_pose)
@@ -213,8 +227,8 @@ def assembly_user_defined_sm():
     sm = smach.StateMachine(outcomes=['TaskFailed', 'TaskSuccessful'])
     with sm:
         smach.StateMachine.add(
-            GoToHomePose.__name__,
-            GoToHomePose(),
+            MoveToHomePose.__name__,
+            MoveToHomePose(),
             transitions={
                 'Successful': DeterminePickPose.__name__
             }
@@ -273,7 +287,7 @@ def assembly_user_defined_sm():
             MoveToPrePlacePoseWithEmptyHand.__name__,
             MoveToPrePlacePoseWithEmptyHand(),
             transitions={
-                'Successful': DeterminePickPose.__name__
+                'Successful': MoveToHomePose.__name__
             }
         )
     return sm
