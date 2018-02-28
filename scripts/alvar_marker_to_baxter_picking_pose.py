@@ -14,19 +14,19 @@ import numpy
 import ipdb
 
 handcoded_marker_compensation = {
-    "0": numpy.array((
+    0: numpy.array((
+        (0.99995001, 0.00609497, 0.00792666, 0.017),
+        (-0.005903, 0.99969405, -0.02401994, 0.017),
+        (-0.00807064, 0.02397195, 0.99968005, 0.056),
+        (0.0, 0.0, 0.0, 1.0)
+    ), dtype=numpy.float64),
+    8: numpy.array((
         (1.0, 0.0, 0.0, 0.0),
         (0.0, 1.0, 0.0, 0.0),
         (0.0, 0.0, 1.0, 0.0),
         (0.0, 0.0, 0.0, 1.0)
     ), dtype=numpy.float64),
-    "8": numpy.array((
-        (1.0, 0.0, 0.0, 0.0),
-        (0.0, 1.0, 0.0, 0.0),
-        (0.0, 0.0, 1.0, 0.0),
-        (0.0, 0.0, 0.0, 1.0)
-    ), dtype=numpy.float64),
-    "13": numpy.array((
+    13: numpy.array((
         (1.0, 0.0, 0.0, 0.0),
         (0.0, 1.0, 0.0, 0.0),
         (0.0, 0.0, 1.0, 0.0),
@@ -51,9 +51,9 @@ def transform_into_baxter_picking_space(mat):
             mat[:3, swap_with] = mat[:3, axis]
             mat[:3, axis] = tmp
     
-    if mat[0][0] > 0:
+    if mat[0][0] < 0:
         mat[:3, 0] = -mat[:3, 0]
-    if mat[1][1] < 0:
+    if mat[1][1] > 0:
         mat[:3, 1] = -mat[:3, 1]
     if mat[2][2] > 0:
         mat[:3, 2] = -mat[:3, 2]
@@ -101,7 +101,7 @@ if __name__ == '__main__':
                 )
                 
                 if marker.id in handcoded_marker_compensation:
-                    base_to_marker = numpy.dot(base_to_marker, handcoded_marker_compensation[marker.id])
+                    base_to_marker = numpy.dot(handcoded_marker_compensation[marker.id], base_to_marker)
                 base_to_marker = transform_into_baxter_picking_space(base_to_marker) 
                 trans = translation_from_matrix(base_to_marker)
                 quat = quaternion_from_matrix(base_to_marker)
