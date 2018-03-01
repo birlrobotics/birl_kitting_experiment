@@ -21,9 +21,6 @@ def profile_dmp(list_of_mat, dmp_model, fname):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')  
     for mat in list_of_mat:
-        ax.set_xlim3d(0, 2)
-        ax.set_ylim3d(-2, 2)
-        ax.set_zlim3d(-2, 2)
         ax.plot(mat[:, 0], mat[:, 1], mat[:, 2], color='black')
 
     for mat in list_of_mat:
@@ -31,6 +28,15 @@ def profile_dmp(list_of_mat, dmp_model, fname):
         end = mat[-1].copy()
         gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
         ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='green')
+
+    for i in numpy.arange(0.01, 0.1, 0.01):
+        print i
+        for mat in list_of_mat:
+            start = mat[0].copy()
+            end = mat[-1].copy()
+            end[2] += i
+            gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
+            ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='blue')
 
     for mat in list_of_mat:
         for i in range(3):
@@ -40,6 +46,9 @@ def profile_dmp(list_of_mat, dmp_model, fname):
             gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
             ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='red')
 
+    ax.set_xlim3d(0, 2)
+    ax.set_ylim3d(-2, 2)
+    ax.set_zlim3d(-2, 2)
     ax.set_title(fname)
     fig.show()
 
