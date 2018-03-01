@@ -11,7 +11,7 @@ from tf.transformations import (
 import copy
 import ipdb
 
-hover_height = 0.2
+hover_height = 0.10
 
 if __name__ == '__main__':
     moveit_commander.roscpp_initialize(sys.argv)
