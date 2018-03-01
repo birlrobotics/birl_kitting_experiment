@@ -25,17 +25,18 @@ place_hover_height = 0.10
 class MoveToHomePose(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Successful'])
-        self.state_no = 1 # Skill tag
+        self.state_no = 0 # Skill tag
         self.depend_on_prev_state = False # Set this flag accordingly
 
-    def get_dmp_model(self):
-        return joblib.load(os.path.join(dmp_model_dir, 'pre_place_to_home')) 
-
-    def get_pose_goal(self): # Goal getter, will be reused in executing recovery policy
-        return hardcoded_data.home_pose
+    def get_joint_state_goal(self):
+        name = ['head_nod', 'head_pan', 'left_e0', 'left_e1', 'left_s0', 'left_s1', 'left_w0', 'left_w1', 'left_w2', 'right_e0', 'right_e1', 'right_s0', 'right_s1', 'right_w0', 'right_w1', 'right_w2', 'torso_t0']
+        position = [0.0, 0.09433981845495294, 0.4851214241687621, 1.513655542445932, 0.5622039587600042, -0.07094661143970038, -0.5560680356084625, 0.400368985638093, -0.22511168062218448, 0.7412962157456262, 0.9533690596707847, 0.1499466220157992, -0.8563447748370322, -0.3992185000471789, 1.6532477941435046, 0.05253884198507542, -12.565987119160338]
+        d = dict(zip(name, position))
+        return d
 
     def determine_successor(self): # Determine next state
         return 'Successful'
+
 
 class DeterminePickPose(smach.State):
     pick_pose = None
@@ -96,6 +97,9 @@ class Pick(smach.State):
 
     def after_motion(self):
         baxter_interface.Gripper('right').close()
+
+    def get_dmp_model(self):
+        return joblib.load(os.path.join(dmp_model_dir, 'pre_pick_to_pick')) 
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
@@ -109,6 +113,9 @@ class MoveToPrePickPoseWithFullHand(smach.State):
         smach.State.__init__(self, outcomes=['Successful'])
         self.state_no = 5 # Skill tag
         self.depend_on_prev_state = True # Set this flag accordingly
+
+    def get_dmp_model(self):
+        return joblib.load(os.path.join(dmp_model_dir, 'pick_to_pre_pick')) 
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
@@ -177,6 +184,9 @@ class Place(smach.State):
 
     def after_motion(self):
         baxter_interface.Gripper('right').open()
+
+    def get_dmp_model(self):
+        return joblib.load(os.path.join(dmp_model_dir, 'pre_place_to_place')) 
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePlacePose.place_pose)
@@ -190,6 +200,9 @@ class MoveToPrePlacePoseWithEmptyHand(smach.State):
         smach.State.__init__(self, outcomes=['Successful'])
         self.state_no = 9 # Skill tag
         self.depend_on_prev_state = True # Set this flag accordingly
+
+    def get_dmp_model(self):
+        return joblib.load(os.path.join(dmp_model_dir, 'place_to_pre_place')) 
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePlacePose.place_pose)

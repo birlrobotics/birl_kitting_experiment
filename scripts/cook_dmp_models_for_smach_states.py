@@ -34,7 +34,8 @@ def profile_dmp(list_of_mat, dmp_model, fname):
 
     for mat in list_of_mat:
         for i in range(3):
-            start = mat[0].copy()+numpy.random.normal(0,pow(0.1,i),mat.shape[1])
+            start = mat[0].copy()
+            #start = mat[0].copy()+numpy.random.normal(0,pow(0.1,i),mat.shape[1])
             end = mat[-1].copy()+numpy.random.normal(0,pow(0.1,i),mat.shape[1])
             gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
             ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='red')
