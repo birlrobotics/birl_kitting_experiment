@@ -12,6 +12,7 @@ from tf.transformations import (
 import baxter_interface
 import numpy
 import os
+import hardcoded_data
 from sklearn.externals import joblib
 
 dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
@@ -31,18 +32,7 @@ class MoveToHomePose(smach.State):
         return joblib.load(os.path.join(dmp_model_dir, 'pre_place_to_home')) 
 
     def get_pose_goal(self): # Goal getter, will be reused in executing recovery policy
-        home_pose = Pose()
-        home_pose.position.x = 0.807696880366
-        home_pose.position.y = -0.357654593225
-        home_pose.position.z = 0.485923232894
-        home_pose.orientation = Quaternion(
-            x= 0.0360998886755,
-            y= 0.987682209702,
-            z= -0.0220824712831,
-            w= 0.150642009872,
-        )
-
-        return home_pose
+        return hardcoded_data.home_pose
 
     def determine_successor(self): # Determine next state
         return 'Successful'
@@ -142,16 +132,7 @@ class DeterminePlacePose(smach.State):
         self.depend_on_prev_state = False # Set this flag accordingly
 
     def determine_successor(self): # Determine next state
-        DeterminePlacePose.place_pose = Pose()
-        DeterminePlacePose.place_pose.position.x = 0.0689814878187
-        DeterminePlacePose.place_pose.position.y = -0.809844772878
-        DeterminePlacePose.place_pose.position.z = 0.110868228768
-        DeterminePlacePose.place_pose.orientation = Quaternion(
-            x= 0.00602278560434,
-            y= 0.999630513296,
-            z= -0.0262524593887,
-            w= 0.00365668116077,
-        )
+        DeterminePlacePose.place_pose = hardcoded_data.place_pose
 
         pos = DeterminePlacePose.place_pose.position
         ori = DeterminePlacePose.place_pose.orientation
