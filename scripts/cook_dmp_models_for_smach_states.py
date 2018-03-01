@@ -42,6 +42,18 @@ def profile_dmp(list_of_mat, dmp_model, fname):
     ax.set_title(fname)
     fig.show()
 
+def filter_static_points(mat):
+    last = mat[0]
+    new_mat = [last]
+    for idx in range(mat.shape[0]):
+        if numpy.linalg.norm(mat[idx]-last) < 0.01:
+            pass
+        else:
+            new_mat.append(mat[idx])
+            last = mat[idx] 
+
+    return numpy.array(new_mat)
+
 
 if __name__ == '__main__':
     d = {}
@@ -53,7 +65,7 @@ if __name__ == '__main__':
     print d
 
     for label in d: 
-        list_of_mat = [numpy.load(f) for f in d[label]]
+        list_of_mat = [filter_static_points(numpy.load(f)) for f in d[label]]
         basis_weight, basis_function_type = birl_baxter_dmp.dmp_train.train(list_of_mat)
         model = {
             "basis_weight": basis_weight,
