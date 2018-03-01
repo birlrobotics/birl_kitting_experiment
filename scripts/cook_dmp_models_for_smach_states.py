@@ -18,23 +18,30 @@ dmp_model_dir = os.path.join(dir_of_this_script, '..', 'data', 'dmp_models')
 dmp_model_profiles = os.path.join(dir_of_this_script, '..', 'data', 'dmp_model_profiles')
 
 def profile_dmp(list_of_mat, dmp_model, fname):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')  
     for mat in list_of_mat:
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')  
         ax.set_xlim3d(0, 2)
         ax.set_ylim3d(-2, 2)
         ax.set_zlim3d(-2, 2)
         ax.plot(mat[:, 0], mat[:, 1], mat[:, 2], color='black')
 
-        colors = ['red', 'yellow', 'orange']
-        for i in range(3):
-            start = mat[0].copy()+numpy.random.normal(0,0.1,mat.shape[1])
-            end = mat[-1].copy()+numpy.random.normal(0,0.1,mat.shape[1])
-            gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
-            ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color=colors[i])
-        ax.set_title(fname)
+    for mat in list_of_mat:
+        start = mat[0].copy()
+        end = mat[-1].copy()
+        gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
+        ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='green')
 
-    plt.show()
+    for mat in list_of_mat:
+        for i in range(3):
+            start = mat[0].copy()+numpy.random.normal(0,pow(0.1,i),mat.shape[1])
+            end = mat[-1].copy()+numpy.random.normal(0,pow(0.1,i),mat.shape[1])
+            gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
+            ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='red')
+
+    ax.set_title(fname)
+    fig.show()
+
 
 if __name__ == '__main__':
     d = {}
@@ -43,6 +50,7 @@ if __name__ == '__main__':
         if label not in d:
             d[label] = []
         d[label].append(f)
+    print d
 
     for label in d: 
         list_of_mat = [numpy.load(f) for f in d[label]]
@@ -60,3 +68,4 @@ if __name__ == '__main__':
 
         profile_dmp(list_of_mat, model, label)
     
+    raw_input()
