@@ -13,7 +13,7 @@ import baxter_interface
 import numpy
 import os
 import hardcoded_data
-from sklearn.externals import joblib
+import dill
 from ar_track_alvar_msgs.msg import AlvarMarkers
 import rospy
 
@@ -81,7 +81,7 @@ class MoveToPrePickPoseWithEmptyHand(smach.State):
         self.depend_on_prev_state = True # Set this flag accordingly
 
     def get_dmp_model(self):
-        return joblib.load(os.path.join(dmp_model_dir, 'home_to_pre_pick')) 
+        return dill.load(open(os.path.join(dmp_model_dir, 'home_to_pre_pick'), 'r'))
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
@@ -109,7 +109,7 @@ class Pick(smach.State):
         baxter_interface.Gripper('right').close()
 
     def get_dmp_model(self):
-        return joblib.load(os.path.join(dmp_model_dir, 'pre_pick_to_pick')) 
+        return dill.load(open(os.path.join(dmp_model_dir, 'pre_pick_to_pick'), 'r'))
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
@@ -125,7 +125,7 @@ class MoveToPrePickPoseWithFullHand(smach.State):
         self.depend_on_prev_state = True # Set this flag accordingly
 
     def get_dmp_model(self):
-        return joblib.load(os.path.join(dmp_model_dir, 'pick_to_pre_pick')) 
+        return dill.load(open(os.path.join(dmp_model_dir, 'pick_to_pre_pick'), 'r'))
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
@@ -171,7 +171,7 @@ class MoveToPrePlacePoseWithFullHand(smach.State):
         self.depend_on_prev_state = True # Set this flag accordingly
 
     def get_dmp_model(self):
-        return joblib.load(os.path.join(dmp_model_dir, 'pre_pick_to_pre_place')) 
+        return dill.load(open(os.path.join(dmp_model_dir, 'pre_pick_to_pre_place'), 'r'))
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePlacePose.place_pose)
@@ -196,7 +196,7 @@ class Place(smach.State):
         baxter_interface.Gripper('right').open()
 
     def get_dmp_model(self):
-        return joblib.load(os.path.join(dmp_model_dir, 'pre_place_to_place')) 
+        return dill.load(open(os.path.join(dmp_model_dir, 'pre_place_to_place'), 'r'))
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePlacePose.place_pose)
@@ -212,7 +212,7 @@ class MoveToPrePlacePoseWithEmptyHand(smach.State):
         self.depend_on_prev_state = True # Set this flag accordingly
 
     def get_dmp_model(self):
-        return joblib.load(os.path.join(dmp_model_dir, 'place_to_pre_place')) 
+        return dill.load(open(os.path.join(dmp_model_dir, 'place_to_pre_place'), 'r'))
     
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePlacePose.place_pose)
