@@ -15,7 +15,6 @@ import os
 import hardcoded_data
 from sklearn.externals import joblib
 from ar_track_alvar_msgs.msg import AlvarMarkers
-import rospy
 
 dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
 dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models')
@@ -52,11 +51,6 @@ class DeterminePickPose(smach.State):
         
 
         msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers)
-        if len(msg.markers) == 0:
-            return 'VisionSaysNone'
-    
-        DeterminePickPose.pick_pose = msg.markers[0].pose.pose
-
         '''
         if DeterminePickPose.already_pick_count >= 3:
             return 'VisionSaysNone'

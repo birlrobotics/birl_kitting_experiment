@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 import numpy
-import birl_baxter_dmp.dmp_train
-from sklearn.externals import joblib
 import os
 import glob
 import numpy
-import birl_baxter_dmp.dmp_train
-import birl_baxter_dmp.dmp_generalize
+import birl_dmp
 import ipdb
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import random
+from smach_based_introspection_framework.offline_part.model_training import train_dmp_model
+import dill
+from birl_dmp.dmp_training.util import generalize_via_dmp
 
 dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
 demonstrations_dir = os.path.join(dir_of_this_script, '..', 'data', 'demonstrations')
@@ -26,7 +26,7 @@ def profile_dmp(list_of_mat, dmp_model, fname):
     for mat in list_of_mat:
         start = mat[0].copy()
         end = mat[-1].copy()
-        gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
+        gen_mat = generalize_via_dmp(start, end, dmp_model)
         ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='green')
 
     for i in numpy.arange(0.01, 0.1, 0.01):
@@ -35,7 +35,7 @@ def profile_dmp(list_of_mat, dmp_model, fname):
             start = mat[0].copy()
             end = mat[-1].copy()
             end[2] += i
-            gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
+            gen_mat = generalize_via_dmp(start, end, dmp_model)
             ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='blue')
 
     for mat in list_of_mat:
@@ -43,7 +43,7 @@ def profile_dmp(list_of_mat, dmp_model, fname):
             start = mat[0].copy()
             #start = mat[0].copy()+numpy.random.normal(0,pow(0.1,i),mat.shape[1])
             end = mat[-1].copy()+numpy.random.normal(0,pow(0.1,i),mat.shape[1])
-            gen_mat = birl_baxter_dmp.dmp_generalize.dmp_imitate(starting_pose=start, ending_pose=end, weight_mat=dmp_model["basis_weight"], base_fuc=dmp_model["basis_function_type"])
+            gen_mat = generalize_via_dmp(start, end, dmp_model)
             ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='red')
 
     ax.set_xlim3d(0, 2)
@@ -76,18 +76,18 @@ if __name__ == '__main__':
 
     for label in d: 
         list_of_mat = [filter_static_points(numpy.load(f)) for f in d[label]]
-        basis_weight, basis_function_type = birl_baxter_dmp.dmp_train.train(list_of_mat)
-        model = {
-            "basis_weight": basis_weight,
-            "basis_function_type": basis_function_type,
-        }
+
+        orig_mat = list_of_mat[0]    
+
+        result = train_dmp_model.run(orig_mat)
+
         if not os.path.isdir(dmp_model_dir):
             os.makedirs(dmp_model_dir)
-        joblib.dump(
-            model,
-            os.path.join(dmp_model_dir, label)
+        dill.dump(
+            result['model'],
+            open(os.path.join(dmp_model_dir, label), 'w')
         )
 
-        profile_dmp(list_of_mat, model, label)
+        profile_dmp(list_of_mat, result['model'], label)
     
     raw_input()
