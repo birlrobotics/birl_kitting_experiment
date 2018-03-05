@@ -45,7 +45,7 @@ class DeterminePickPose(smach.State):
     already_pick_count = 0
     def __init__(self):
         smach.State.__init__(self, outcomes=['GotOneFromVision', 'VisionSaysNone'])
-        self.state_no = 2 # Skill tag
+        self.state_no = 0 # Skill tag
         self.depend_on_prev_state = False # Set this flag accordingly
 
     def determine_successor(self): # Determine next state
@@ -145,7 +145,7 @@ class DeterminePlacePose(smach.State):
     already_plac_count = 0
     def __init__(self):
         smach.State.__init__(self, outcomes=['Successful'])
-        self.state_no = 6 # Skill tag
+        self.state_no = 0 # Skill tag
         self.depend_on_prev_state = False # Set this flag accordingly
 
     def determine_successor(self): # Determine next state
