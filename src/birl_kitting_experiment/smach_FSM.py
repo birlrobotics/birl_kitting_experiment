@@ -24,6 +24,39 @@ pick_hover_height = 0.10
 place_step_size = 0.07
 place_hover_height = 0.10
 
+class CalibrateForceSensor(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['Successful'])
+        self.state_no = 0
+        self.depend_on_prev_state = False
+
+    def get_pose_goal(self):
+        calibration_pose = Pose()
+        calibration_pose.position.x = 0.76301988477
+        calibration_pose.position.y = -0.290728116404
+        calibration_pose.position.z = -0.0195624201388+0.15
+        calibration_pose.orientation = Quaternion(
+            x= -0.0259799924463,
+            y= 0.999465665097,
+            z= 0.00445775211005,
+            w= 0.0193275122869,
+        )
+        return calibration_pose
+
+    def after_motion(self):
+        from std_srvs.srv import Trigger
+        try:
+            rospy.wait_for_service('/robotiq_wrench_calibration_service', timeout=3)
+            trigger = rospy.ServiceProxy('/robotiq_wrench_calibration_service', Trigger)
+            resp = trigger()
+            rospy.sleep(5)
+        except Exception as exc:
+            rospy.logerr("calling force sensor calibration failed: %s"%exc)
+
+
+    def determine_successor(self):
+        return 'Successful'
+
 class MoveToHomePose(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Successful'])
@@ -230,6 +263,13 @@ class MoveToPrePlacePoseWithEmptyHand(smach.State):
 def assembly_user_defined_sm():
     sm = smach.StateMachine(outcomes=['TaskFailed', 'TaskSuccessful'])
     with sm:
+        smach.StateMachine.add(
+            CalibrateForceSensor.__name__,
+            CalibrateForceSensor(),
+            transitions={
+                'Successful': MoveToHomePose.__name__
+            }
+        )
         smach.StateMachine.add(
             MoveToHomePose.__name__,
             MoveToHomePose(),
