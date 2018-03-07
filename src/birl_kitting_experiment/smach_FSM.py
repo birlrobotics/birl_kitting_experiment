@@ -49,6 +49,9 @@ class CalibrateForceSensor(smach.State):
             rospy.wait_for_service('/robotiq_wrench_calibration_service', timeout=3)
             trigger = rospy.ServiceProxy('/robotiq_wrench_calibration_service', Trigger)
             resp = trigger()
+            rospy.wait_for_service('/tactile_texel_sum_reset', timeout=3)
+            trigger = rospy.ServiceProxy('/tactile_texel_sum_reset', Trigger)
+            resp = trigger()
             rospy.sleep(5)
         except Exception as exc:
             rospy.logerr("calling force sensor calibration failed: %s"%exc)
@@ -136,10 +139,14 @@ class Pick(smach.State):
         self.depend_on_prev_state = True # Set this flag accordingly
 
     def before_motion(self):
-        baxter_interface.Gripper('right').open()
+        g = baxter_interface.Gripper('right')
+        rospy.sleep(1)
+        g.open()
 
     def after_motion(self):
-        baxter_interface.Gripper('right').close()
+        g = baxter_interface.Gripper('right')
+        rospy.sleep(1)
+        g.close()
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'pre_pick_to_pick'), 'r'))
@@ -194,7 +201,6 @@ class DeterminePlacePose(smach.State):
         DeterminePlacePose.place_pose.position.y -= step*base_to_place_mat[1, 0]
         DeterminePlacePose.place_pose.position.z -= step*base_to_place_mat[2, 0]
 
-        DeterminePlacePose.already_plac_count += 1
         return 'Successful'
 
 class MoveToPrePlacePoseWithFullHand(smach.State):
@@ -236,6 +242,7 @@ class Place(smach.State):
         return pose
 
     def determine_successor(self): # Determine next state
+        DeterminePlacePose.already_plac_count += 1
         return 'Successful'
 
 class MoveToPrePlacePoseWithEmptyHand(smach.State):
