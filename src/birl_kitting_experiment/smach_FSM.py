@@ -24,24 +24,17 @@ pick_hover_height = 0.10
 place_step_size = 0.07
 place_hover_height = 0.10
 
-class CalibrateForceSensor(smach.State):
+class MoveToHomePose(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Successful'])
-        self.state_no = 0
-        self.depend_on_prev_state = False
+        self.state_no = 0 # Skill tag
+        self.depend_on_prev_state = False # Set this flag accordingly
 
-    def get_pose_goal(self):
-        calibration_pose = Pose()
-        calibration_pose.position.x = 0.76301988477
-        calibration_pose.position.y = -0.290728116404
-        calibration_pose.position.z = -0.0195624201388+0.15
-        calibration_pose.orientation = Quaternion(
-            x= -0.0259799924463,
-            y= 0.999465665097,
-            z= 0.00445775211005,
-            w= 0.0193275122869,
-        )
-        return calibration_pose
+    def get_joint_state_goal(self):
+        name = ['head_nod', 'head_pan', 'left_e0', 'left_e1', 'left_s0', 'left_s1', 'left_w0', 'left_w1', 'left_w2', 'right_e0', 'right_e1', 'right_s0', 'right_s1', 'right_w0', 'right_w1', 'right_w2', 'torso_t0']
+        position = [0.0, 0.09433981845495294, 0.4851214241687621, 1.513655542445932, 0.5622039587600042, -0.07094661143970038, -0.5560680356084625, 0.400368985638093, -0.22511168062218448, 0.7412962157456262, 0.9533690596707847, 0.1499466220157992, -0.8563447748370322, -0.3992185000471789, 1.6532477941435046, 0.05253884198507542, -12.565987119160338]
+        d = dict(zip(name, position))
+        return d
 
     def after_motion(self):
         from std_srvs.srv import Trigger
@@ -55,22 +48,6 @@ class CalibrateForceSensor(smach.State):
             rospy.sleep(5)
         except Exception as exc:
             rospy.logerr("calling force sensor calibration failed: %s"%exc)
-
-
-    def determine_successor(self):
-        return 'Successful'
-
-class MoveToHomePose(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['Successful'])
-        self.state_no = 0 # Skill tag
-        self.depend_on_prev_state = False # Set this flag accordingly
-
-    def get_joint_state_goal(self):
-        name = ['head_nod', 'head_pan', 'left_e0', 'left_e1', 'left_s0', 'left_s1', 'left_w0', 'left_w1', 'left_w2', 'right_e0', 'right_e1', 'right_s0', 'right_s1', 'right_w0', 'right_w1', 'right_w2', 'torso_t0']
-        position = [0.0, 0.09433981845495294, 0.4851214241687621, 1.513655542445932, 0.5622039587600042, -0.07094661143970038, -0.5560680356084625, 0.400368985638093, -0.22511168062218448, 0.7412962157456262, 0.9533690596707847, 0.1499466220157992, -0.8563447748370322, -0.3992185000471789, 1.6532477941435046, 0.05253884198507542, -12.565987119160338]
-        d = dict(zip(name, position))
-        return d
 
     def determine_successor(self): # Determine next state
         return 'Successful'
@@ -270,13 +247,6 @@ class MoveToPrePlacePoseWithEmptyHand(smach.State):
 def assembly_user_defined_sm():
     sm = smach.StateMachine(outcomes=['TaskFailed', 'TaskSuccessful'])
     with sm:
-        smach.StateMachine.add(
-            CalibrateForceSensor.__name__,
-            CalibrateForceSensor(),
-            transitions={
-                'Successful': MoveToHomePose.__name__
-            }
-        )
         smach.StateMachine.add(
             MoveToHomePose.__name__,
             MoveToHomePose(),
