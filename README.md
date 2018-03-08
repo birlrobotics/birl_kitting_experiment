@@ -25,12 +25,17 @@ rosrun birl_kitting_experiment alvar_marker_to_baxter_picking_pose.py
 5. Move Baxter right arm to picking poses:
 ```bash
 [Open a new terminal]
-rosrun baxter_interface joint_trajectory_action_server.py
-
-[Open a new terminal]
-roslaunch baxter_moveit_config baxter_grippers.launch
+rosrun birl_baxter_online_urdf_update update_urdf.py
+roslaunch birl_moveit_r_ft_config birl_baxter_grippers.launch
 
 [Open a new terminal]
 rosrun birl_kitting_experiment test_baxter_picking_topic.py 
 [Read the console and interact with it]
 ```
+
+6. Run the experiment:
+```bash
+rosrun birl_kitting_experiment smach_based_kitting_experiment_runner.py
+```
+
+If you want to run the experiment again, repeat step 6.

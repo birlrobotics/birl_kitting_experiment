@@ -13,24 +13,63 @@ import copy
 import numpy
 import ipdb
 
+comfortable_pick_frame = numpy.matrix([[0.9291218997620283, 0.36968764383826475, 0.007971284458086786, 0.777544280524], [0.36854106257578606, -0.9275684272500412, 0.06159787305090193, -0.0195243675556], [0.030165884341586742, -0.05429418718607709, -0.9980692163671278, 0.285303310464], [0.0, 0.0, 0.0, 1.0]])
+to_confortable_pick_frame = comfortable_pick_frame[:3, :3].I
+
 handcoded_marker_compensation = {
-    "0": numpy.array((
-        (1.0, 0.0, 0.0, 0.0),
+    0: numpy.array(
+        ((1.0, 0.0, 0.0, -0.0),
+        (0.0, 1.0, 0.0, -0.0),
+        (0.0, 0.0, 1.0, 0.062),
+        (0.0, 0.0, 0.0, 1.0))
+    , dtype=numpy.float64),
+    4: numpy.array(
+        ((1.0, 0.0, 0.0, -0.0),
+        (0.0, 1.0, 0.0, -0.0),
+        (0.0, 0.0, 1.0, 0.05),
+        (0.0, 0.0, 0.0, 1.0))
+    , dtype=numpy.float64),
+    
+    6: numpy.array(
+        ((1.0, 0.0, 0.0, -0.0),
+        (0.0, 1.0, 0.0, -0.0),
+        (0.0, 0.0, 1.0, 0.05),
+        (0.0, 0.0, 0.0, 1.0))
+    , dtype=numpy.float64),
+    
+    8: numpy.array(
+        ((1.0, 0.0, 0.0, 0.0),
         (0.0, 1.0, 0.0, 0.0),
-        (0.0, 0.0, 1.0, 0.0),
-        (0.0, 0.0, 0.0, 1.0)
+        (0.0, 0.0, 1.0, 0.064),
+        (0.0, 0.0, 0.0, 1.0))
+    , dtype=numpy.float64),
+    
+    11: numpy.array((
+        ((1.0, 0.0, 0.0, 0.0),
+        (0.0, 1.0, 0.0, -0.0),
+        (0.0, 0.0, 1.0, 0.05),
+        (0.0, 0.0, 0.0, 1.0))
     ), dtype=numpy.float64),
-    "8": numpy.array((
-        (1.0, 0.0, 0.0, 0.0),
-        (0.0, 1.0, 0.0, 0.0),
-        (0.0, 0.0, 1.0, 0.0),
-        (0.0, 0.0, 0.0, 1.0)
+    
+    13: numpy.array((
+        ((1.0, 0.0, 0.0, 0.0),
+        (0.0, 1.0, 0.0, -0.0),
+        (0.0, 0.0, 1.0, 0.075),
+        (0.0, 0.0, 0.0, 1.0))
     ), dtype=numpy.float64),
-    "13": numpy.array((
-        (1.0, 0.0, 0.0, 0.0),
-        (0.0, 1.0, 0.0, 0.0),
-        (0.0, 0.0, 1.0, 0.0),
-        (0.0, 0.0, 0.0, 1.0)
+   
+   17: numpy.array((
+        ((1.0, 0.0, 0.0, 0.0),
+        (0.0, 1.0, 0.0, -0.0),
+        (0.0, 0.0, 1.0, 0.075),
+        (0.0, 0.0, 0.0, 1.0))
+    ), dtype=numpy.float64),    
+   
+   18: numpy.array((
+        ((0.0, 1.0,  0.0,  0.003),
+        (-1.0, 0.0, 0.0,  -0.007),
+        (0.0 , 0.0 ,1.0, -0.015),
+        (0.0, 0.0, 0.0, 1.0))
     ), dtype=numpy.float64),
 }
 
@@ -44,19 +83,30 @@ def cb(msg):
         shared_msg = msg
 
 def transform_into_baxter_picking_space(mat):
+
+    # Determine x, y, z by directions
     for axis in range(3):
         swap_with =  abs(mat[:3, axis]).argmax()
         if swap_with != axis:
             tmp = mat[:3, swap_with].copy()
             mat[:3, swap_with] = mat[:3, axis]
             mat[:3, axis] = tmp
-    
-    if mat[0][0] > 0:
-        mat[:3, 0] = -mat[:3, 0]
-    if mat[1][1] < 0:
-        mat[:3, 1] = -mat[:3, 1]
-    if mat[2][2] > 0:
+
+    # If z is pointing upwards, flip it
+    if mat[:3, 2][2] > 0:
         mat[:3, 2] = -mat[:3, 2]
+
+    # If x is pointing inwards, flip it
+    vec_x = mat[:3, 0].reshape((3, -1))
+    if (to_confortable_pick_frame*vec_x)[0] < 0:
+        mat[:3, 0] = -mat[:3, 0]
+        mat[:3, 1] = -mat[:3, 1]
+
+    # Make sure x, y, z subject to right-hand rule
+    if numpy.cross(mat[:3, 0], mat[:3, 1])[2] > 0:
+        tmp = mat[:3, 0].copy()
+        mat[:3, 0] = mat[:3, 1]
+        mat[:3, 1] = tmp 
 
     return mat
         
@@ -101,7 +151,7 @@ if __name__ == '__main__':
                 )
                 
                 if marker.id in handcoded_marker_compensation:
-                    base_to_marker = numpy.dot(base_to_marker, handcoded_marker_compensation[marker.id])
+                    base_to_marker = numpy.dot(base_to_marker , handcoded_marker_compensation[marker.id])
                 base_to_marker = transform_into_baxter_picking_space(base_to_marker) 
                 trans = translation_from_matrix(base_to_marker)
                 quat = quaternion_from_matrix(base_to_marker)
