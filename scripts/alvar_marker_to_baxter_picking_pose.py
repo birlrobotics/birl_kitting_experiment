@@ -56,7 +56,7 @@ def transform_into_baxter_picking_space(mat):
             mat[:3, swap_with] = mat[:3, axis]
             mat[:3, axis] = tmp
 
-    # If y is pointing upwards, flip it
+    # If z is pointing upwards, flip it
     if mat[:3, 2][2] > 0:
         mat[:3, 2] = -mat[:3, 2]
 
@@ -115,7 +115,7 @@ if __name__ == '__main__':
                 )
                 
                 if marker.id in handcoded_marker_compensation:
-                    base_to_marker = numpy.dot(handcoded_marker_compensation[marker.id], base_to_marker)
+                    base_to_marker = numpy.dot(base_to_marker , handcoded_marker_compensation[marker.id])
                 base_to_marker = transform_into_baxter_picking_space(base_to_marker) 
                 trans = translation_from_matrix(base_to_marker)
                 quat = quaternion_from_matrix(base_to_marker)

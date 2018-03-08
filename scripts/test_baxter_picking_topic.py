@@ -16,7 +16,7 @@ hover_height = 0.10
 if __name__ == '__main__':
     moveit_commander.roscpp_initialize(sys.argv)
     rospy.init_node('test_baxter_picking_topic_py')
-    msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers)
+    msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers) # listen once
     robot = moveit_commander.RobotCommander()
     group = moveit_commander.MoveGroupCommander("right_arm")
     group.set_max_velocity_scaling_factor(0.3)
