@@ -6,8 +6,7 @@
     <arg name="cam_image_topic" default="/camera/rgb/image_raw" />
     <arg name="cam_info_topic" default="/camera/rgb/camera_info" />
     <arg name="output_frame" default="/camera_link" />
-    <arg name="bundle_files" default="$(find birl_kitting_experiment)/bundles/pan_stand_0_1_2_3.xml $(find birl_kitting_experiment)/bundles/pan_stand_box_8_9_10_12.xml $(find birl_kitting_experiment)/bundles/package_box_4_5.xml $(find birl_kitting_experiment)/bundles/ink_box_13_14.xml $(find birl_kitting_experiment)/bundles/pencil_case_11_15.xml
-     $(find birl_kitting_experiment)/bundles/weight_box_18_19.xml $(find birl_kitting_experiment)/bundles/package_tape_17.xml $(find birl_kitting_experiment)/bundles/cindy_box_6.xml"  />
+    <arg name="bundle_files" default="$(find birl_kitting_experiment)/bundles/pan_stand_0_1_2_3.xml $(find birl_kitting_experiment)/bundles/pan_stand_box_8_9_10_12.xml $(find birl_kitting_experiment)/bundles/package_box_4_5.xml $(find birl_kitting_experiment)/bundles/ink_box_13_14.xml $(find birl_kitting_experiment)/bundles/pencil_case_11_15.xml $(find birl_kitting_experiment)/bundles/weight_box_18_19.xml $(find birl_kitting_experiment)/bundles/package_tape_17.xml $(find birl_kitting_experiment)/bundles/cindy_box_6.xml" />
 
 
     <node name="ar_track_alvar" pkg="ar_track_alvar" type="findMarkerBundlesNoKinect" respawn="false" output="screen"
