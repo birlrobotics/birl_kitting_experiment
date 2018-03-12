@@ -9,3 +9,4 @@ from birl_kitting_experiment.smach_FSM import (
 if __name__ == '__main__':
     sm = assembly_user_defined_sm()
     smach_runner.run(sm)
+    

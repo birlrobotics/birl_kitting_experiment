@@ -41,6 +41,7 @@
     
     [Open a new terminal]
     rosrun tactilesensors4 PollData4
+    python  ../tactilesensors4/scripts/tactile_preprocessing.py
     ```
 
 1. Run the experiment:
