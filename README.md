@@ -40,7 +40,7 @@
     rosrun robotiq_force_torque_sensor rq_sensor
     
     [Open a new terminal]
-    TODO: launch tactile sensor
+    rosrun tactilesensors4 PollData4
     ```
 
 1. Run the experiment:
