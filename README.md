@@ -26,7 +26,7 @@ rosrun birl_kitting_experiment alvar_marker_to_baxter_picking_pose.py
 ```bash
 [Open a new terminal]
 rosrun birl_baxter_online_urdf_update update_urdf.py
-roslaunch birl_moveit_r_ft_config birl_baxter_grippers.launch
+roslaunch birl_moveit_r_ft_config birl_baxter_gripper.launch
 
 [Open a new terminal]
 rosrun birl_kitting_experiment test_baxter_picking_topic.py 
