@@ -38,10 +38,7 @@ handcoded_marker_compensation = {
     , dtype=numpy.float64),
     
     8: numpy.array(
-        ((1.0, 0.0, 0.0, 0.0),
-        (0.0, 1.0, 0.0, 0.0),
-        (0.0, 0.0, 1.0, 0.064),
-        (0.0, 0.0, 0.0, 1.0))
+        [[0.9914362515363785, 0.12278037032965936, -0.0444875241074016, 0.026], [-0.12454308354900923, 0.9914362515363785, -0.039283323174082924, 0.005], [0.039283323174082924, 0.0444875241074016, 0.9982372867806502, -0.029], [0.0, 0.0, 0.0, 1.0]]
     , dtype=numpy.float64),
     
     11: numpy.array((
@@ -73,9 +70,9 @@ handcoded_marker_compensation = {
     ), dtype=numpy.float64),
    
     20: numpy.array((
-        ((1.0,0.0,0.0,0.0),
-        (0.0, 1.0, 0.0,  0.0),
-        (0.0 , 0.0 ,1.0, 0.046),
+        ((0.0, -1.0,0.0,-0.03),
+        (1.0, 0.0, 0.0,  -0.01),
+        (0.0 , 0.0 ,1.0, 0.052),
         (0.0, 0.0, 0.0, 1.0))
     ), dtype=numpy.float64),
 
@@ -86,9 +83,9 @@ handcoded_marker_compensation = {
         (0.0, 0.0, 0.0, 1.0))
     ), dtype=numpy.float64),
    24: numpy.array((
-        ((1.0,0.0,0.0,0.0),
-        (0.0, 1.0, 0.0,  0.0),
-        (0.0 , 0.0 ,1.0, 0.046),
+        ((0.0, -1.0,0.0,-0.03),
+        (1.0, 0.0, 0.0,  -0.01),
+        (0.0 , 0.0 ,1.0, 0.052),
         (0.0, 0.0, 0.0, 1.0))
     ), dtype=numpy.float64),
 }
@@ -174,11 +171,28 @@ if __name__ == '__main__':
                     'base', 
                 )
                 
+                flipped_mat = transform_into_baxter_picking_space(base_to_marker) 
+                trans = translation_from_matrix(flipped_mat)
+                quat = quaternion_from_matrix(flipped_mat)
+                broadcaster.sendTransform(
+                    trans,
+                    quat,
+                    rospy.Time.now(),
+                    'flipped_%s'%marker.id,
+                    'base', 
+                )
+
                 if marker.id in handcoded_marker_compensation:
-                    base_to_marker = numpy.dot(base_to_marker , handcoded_marker_compensation[marker.id])
-                base_to_marker = transform_into_baxter_picking_space(base_to_marker) 
-                trans = translation_from_matrix(base_to_marker)
-                quat = quaternion_from_matrix(base_to_marker)
+                    compensated_mat = numpy.dot(flipped_mat, handcoded_marker_compensation[marker.id])
+                trans = translation_from_matrix(compensated_mat)
+                quat = quaternion_from_matrix(compensated_mat)
+                broadcaster.sendTransform(
+                    trans,
+                    quat,
+                    rospy.Time.now(),
+                    'compensated_%s'%marker.id,
+                    'base', 
+                )
                 broadcaster.sendTransform(
                     trans,
                     quat,
@@ -186,6 +200,7 @@ if __name__ == '__main__':
                     'baxter_picking_pose_%s'%marker.id,
                     'base', 
                 )
+
                 marker.pose.pose.position.x = trans[0]
                 marker.pose.pose.position.y = trans[1]
                 marker.pose.pose.position.z = trans[2]
