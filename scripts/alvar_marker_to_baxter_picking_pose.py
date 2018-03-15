@@ -20,7 +20,7 @@ handcoded_marker_compensation = {
     0: numpy.array(
         ((1.0, 0.0, 0.0, -0.0),
         (0.0, 1.0, 0.0, -0.0),
-        (0.0, 0.0, 1.0, 0.062),
+        (0.0, 0.0, 1.0, 0.051),
         (0.0, 0.0, 0.0, 1.0))
     , dtype=numpy.float64),
     4: numpy.array(
@@ -45,9 +45,9 @@ handcoded_marker_compensation = {
     , dtype=numpy.float64),
     
     11: numpy.array((
-        ((1.0, 0.0, 0.0, 0.0),
-        (0.0, 1.0, 0.0, -0.0),
-        (0.0, 0.0, 1.0, 0.05),
+        ((1.0, 0.0, 0.0, 0.016),
+        (0.0, 1.0, 0.0, -0.021),
+        (0.0, 0.0, 1.0, 0.029),
         (0.0, 0.0, 0.0, 1.0))
     ), dtype=numpy.float64),
     
@@ -66,9 +66,16 @@ handcoded_marker_compensation = {
     ), dtype=numpy.float64),    
    
    18: numpy.array((
-        ((0.0, 1.0,  0.0,  0.003),
-        (-1.0, 0.0, 0.0,  -0.007),
-        (0.0 , 0.0 ,1.0, -0.015),
+        ((0.0, -1.0,  0.0,  0.003),
+        (1.0, 0.0, 0.0,  -0.007),
+        (0.0 , 0.0 ,1.0, 0.39),
+        (0.0, 0.0, 0.0, 1.0))
+    ), dtype=numpy.float64),
+   
+   24: numpy.array((
+        ((1.0,0.0,0.0,0.0),
+        (0.0, 1.0, 0.0,  0.0),
+        (0.0 , 0.0 ,1.0, 0.046),
         (0.0, 0.0, 0.0, 1.0))
     ), dtype=numpy.float64),
 }
@@ -120,10 +127,6 @@ if __name__ == '__main__':
 
     listener = tf.TransformListener()
 
-    look_up_t = rospy.Time(0)
-    listener.waitForTransform('base', 'camera_link', look_up_t, rospy.Duration(3))
-    base_to_cam = listener.lookupTransform('base', 'camera_link', look_up_t)
-    base_to_cam_mat = listener.fromTranslationRotation(*base_to_cam) 
 
     broadcaster = tf.TransformBroadcaster()
     pub = rospy.Publisher("baxter_available_picking_pose", AlvarMarkers, queue_size=10)
@@ -135,6 +138,14 @@ if __name__ == '__main__':
         writable.set()
 
         if msg is not None:
+
+
+            look_up_t = rospy.Time(0)
+            listener.waitForTransform('base', 'left_hand_camera', look_up_t, rospy.Duration(3))
+            base_to_cam = listener.lookupTransform('base', 'left_hand_camera', look_up_t)
+            base_to_cam_mat = listener.fromTranslationRotation(*base_to_cam) 
+
+
             for marker in msg.markers:
                 pose = marker.pose.pose
                 pos = pose.position
