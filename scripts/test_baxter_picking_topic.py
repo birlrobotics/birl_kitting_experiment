@@ -25,6 +25,7 @@ if __name__ == '__main__':
 
     group.set_goal_position_tolerance(0.00001)
     group.set_goal_orientation_tolerance(0.00001)
+    
 
     for marker in msg.markers:
         pos = marker.pose.pose.position

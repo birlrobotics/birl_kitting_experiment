@@ -7,4 +7,6 @@ if __name__ == '__main__':
     camera.open()
     res = (1280,800)
     camera.resolution = res
-    camera.gain = 79
+    camera.exposure = 40
+    camera.fps = 1
+    camera.gain = camera.CONTROL_AUTO

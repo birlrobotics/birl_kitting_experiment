@@ -30,7 +30,7 @@
     ```bash
     [Open a new terminal]
     rosrun birl_baxter_online_urdf_update update_urdf.py
-    roslaunch birl_moveit_r_ft_config birl_baxter_grippers.launch
+    roslaunch birl_moveit_r_ft_config birl_baxter_gripper.launch
     ```
 
 1. Setup sensors, download and install [birl_sensors](https://github.com/birlrobotics/birl_sensors.git). Then run:
