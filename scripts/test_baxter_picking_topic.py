@@ -23,8 +23,8 @@ if __name__ == '__main__':
     group.set_max_acceleration_scaling_factor(0.3)
 
 
-    group.set_goal_position_tolerance(0.00001)
-    group.set_goal_orientation_tolerance(0.00001)
+    group.set_goal_position_tolerance(0.01)
+    group.set_goal_orientation_tolerance(0.01)
     
 
     for marker in msg.markers:
