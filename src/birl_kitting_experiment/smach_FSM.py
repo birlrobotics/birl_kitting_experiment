@@ -32,7 +32,7 @@ class MoveToHomePose(smach.State):
 
     def get_joint_state_goal(self):
         name = ['head_nod', 'head_pan', 'left_e0', 'left_e1', 'left_s0', 'left_s1', 'left_w0', 'left_w1', 'left_w2', 'right_e0', 'right_e1', 'right_s0', 'right_s1', 'right_w0', 'right_w1', 'right_w2', 'torso_t0']
-        position = [0.0, 0.09433981845495294, 0.4851214241687621, 1.513655542445932, 0.5622039587600042, -0.07094661143970038, -0.5560680356084625, 0.400368985638093, -0.22511168062218448, 0.7412962157456262, 0.9533690596707847, 0.1499466220157992, -0.8563447748370322, -0.3992185000471789, 1.6532477941435046, 0.05253884198507542, -12.565987119160338]
+        position = [0.0, -0.10162622719740866, -0.9150195399736493, 1.5086701048853044, 0.286470912137601, 0.6523253300482722, 2.3466071102677115, -0.4759175394414496, -0.026077673394052033, 0.4663301595171658, 0.9234564343070191, 0.3144660615165098, -0.7094661143970039, -0.37160684586524145, 1.4066603824909245, -0.03259709174256504, -12.565987119160338]
         d = dict(zip(name, position))
         return d
 
@@ -42,9 +42,9 @@ class MoveToHomePose(smach.State):
             rospy.wait_for_service('/robotiq_wrench_calibration_service', timeout=3)
             trigger = rospy.ServiceProxy('/robotiq_wrench_calibration_service', Trigger)
             resp = trigger()
-            rospy.wait_for_service('/tactile_texel_sum_reset', timeout=3)
-            trigger = rospy.ServiceProxy('/tactile_texel_sum_reset', Trigger)
-            resp = trigger()
+#            rospy.wait_for_service('/tactile_texel_sum_reset', timeout=3)
+#            trigger = rospy.ServiceProxy('/tactile_texel_sum_reset', Trigger)
+#            resp = trigger()
             rospy.sleep(5)
         except Exception as exc:
             rospy.logerr("calling force sensor calibration failed: %s"%exc)
@@ -62,12 +62,12 @@ class DeterminePickPose(smach.State):
         self.depend_on_prev_state = False # Set this flag accordingly
 
     def determine_successor(self): # Determine next state
-        
+
 
         msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers)
         if len(msg.markers) == 0:
             return 'VisionSaysNone'
-    
+
         DeterminePickPose.pick_pose = msg.markers[0].pose.pose
 
         '''
@@ -95,7 +95,7 @@ class MoveToPrePickPoseWithEmptyHand(smach.State):
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'home_to_pre_pick'), 'r'))
-    
+
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
         pos = pose.position
@@ -127,7 +127,7 @@ class Pick(smach.State):
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'pre_pick_to_pick'), 'r'))
-    
+
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
         return pose
@@ -143,7 +143,7 @@ class MoveToPrePickPoseWithFullHand(smach.State):
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'pick_to_pre_pick'), 'r'))
-    
+
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
         pos = pose.position
@@ -188,7 +188,7 @@ class MoveToPrePlacePoseWithFullHand(smach.State):
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'pre_pick_to_pre_place'), 'r'))
-    
+
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePlacePose.place_pose)
         pos = pose.position
@@ -213,7 +213,7 @@ class Place(smach.State):
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'pre_place_to_place'), 'r'))
-    
+
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePlacePose.place_pose)
         return pose
@@ -230,7 +230,7 @@ class MoveToPrePlacePoseWithEmptyHand(smach.State):
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'place_to_pre_place'), 'r'))
-    
+
     def get_pose_goal(self):
         pose = copy.deepcopy(DeterminePlacePose.place_pose)
         pos = pose.position

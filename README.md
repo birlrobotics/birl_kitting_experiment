@@ -51,3 +51,14 @@
     ```
 
 If you want to run the experiment again, repeat the last step.
+
+# How to record/train DMP
+1. To record a demonstraion: cd ../birl_kitting_expereiment/scripts/
+   ```
+   python record_demonstration.py --name "DEMONSTRATION_NAME"
+   ```
+2. Kinesthetic teaching the robot arm for recording the demonstration until finish, and then press CTRL+C
+3.To train a DMP models of all recorded demonstraions: cd ../birl_kitting_expereiment/scripts/
+```
+python cook_dmp_models_for_smach_states.py
+```
