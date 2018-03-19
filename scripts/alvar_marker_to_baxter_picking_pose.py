@@ -199,7 +199,9 @@ if __name__ == '__main__':
                 marker.pose.pose.orientation.y = quat[1]
                 marker.pose.pose.orientation.z = quat[2]
                 marker.pose.pose.orientation.w = quat[3]
-            pub.publish(msg)
+
+            if len(msg.markers) != 0:
+                pub.publish(msg)
 
         try:
             r.sleep()
