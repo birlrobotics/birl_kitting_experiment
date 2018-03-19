@@ -64,8 +64,12 @@ class DeterminePickPose(smach.State):
     def determine_successor(self): # Determine next state
 
 
-        msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers)
-        if len(msg.markers) == 0:
+        try:
+            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=10)
+        except Exception as exc:
+            rospy.logerr("waiting picking pose failed: %s"%exc)
+            msg = None
+        if msg is None or len(msg.markers) == 0:
             return 'VisionSaysNone'
 
         DeterminePickPose.pick_pose = msg.markers[0].pose.pose
