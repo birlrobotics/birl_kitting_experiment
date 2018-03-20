@@ -117,7 +117,12 @@ def transform_into_baxter_picking_space(mat):
         mat[:3, 1] = tmp 
 
     return mat
-        
+
+def add_noise(mat):
+    mat[0, 3] += numpy.random.normal(0, 0.02)
+    mat[1, 3] += numpy.random.normal(0, 0.02)
+    mat[2, 3] += numpy.random.normal(0, 0.02)
+    return mat
 
 if __name__ == '__main__':
     rospy.init_node("alvar_marker_to_baxter_picking_pose_py")
@@ -184,6 +189,10 @@ if __name__ == '__main__':
                     'compensated_%s'%marker.id,
                     'base', 
                 )
+            
+                noisy_mat = add_noise(compensated_mat)
+                trans = translation_from_matrix(noisy_mat)
+                quat = quaternion_from_matrix(noisy_mat)
                 broadcaster.sendTransform(
                     trans,
                     quat,
