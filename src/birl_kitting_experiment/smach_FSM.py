@@ -20,6 +20,7 @@ import rospy
 dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
 dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models')
 
+SIM_MODE = False
 pick_hover_height = 0.10
 place_step_size = 0.07
 place_hover_height = 0.10
@@ -64,30 +65,31 @@ class DeterminePickPose(smach.State):
     def determine_successor(self): # Determine next state
 
 
-        try:
-            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=10)
-        except Exception as exc:
-            rospy.logerr("waiting picking pose failed: %s"%exc)
-            msg = None
-        if msg is None or len(msg.markers) == 0:
-            return 'VisionSaysNone'
+        if not SIM_MODE:
+            try:
+                msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=10)
+            except Exception as exc:
+                rospy.logerr("waiting picking pose failed: %s"%exc)
+                msg = None
+            if msg is None or len(msg.markers) == 0:
+                return 'VisionSaysNone'
 
-        DeterminePickPose.pick_pose = msg.markers[0].pose.pose
+            DeterminePickPose.pick_pose = msg.markers[0].pose.pose
 
-        '''
-        if DeterminePickPose.already_pick_count >= 3:
-            return 'VisionSaysNone'
-        DeterminePickPose.pick_pose = Pose()
-        DeterminePickPose.pick_pose.position.x = 0.71911746461+random.uniform(-0.1, +0.1)
-        DeterminePickPose.pick_pose.position.y = -0.134129746892+random.uniform(-0.1, +0.1)
-        DeterminePickPose.pick_pose.position.z = 0.315673091393+random.uniform(-0.1, +0.1)
-        DeterminePickPose.pick_pose.orientation = Quaternion(
-            x= -0.25322831688,
-            y= 0.966477494136,
-            z= 0.0131814413255,
-            w= -0.0402855118249,
-        )
-        '''
+        else:
+            if DeterminePickPose.already_pick_count >= 3:
+                return 'VisionSaysNone'
+            DeterminePickPose.pick_pose = Pose()
+            DeterminePickPose.pick_pose.position.x = 0.71911746461+random.uniform(-0.1, +0.1)
+            DeterminePickPose.pick_pose.position.y = -0.134129746892+random.uniform(-0.1, +0.1)
+            DeterminePickPose.pick_pose.position.z = 0.015673091393+random.uniform(-0.1, +0.1)
+            DeterminePickPose.pick_pose.orientation = Quaternion(
+                x= -0.25322831688,
+                y= 0.966477494136,
+                z= 0.0131814413255,
+                w= -0.0402855118249,
+            )
+
         DeterminePickPose.already_pick_count += 1
         return 'GotOneFromVision'
 
