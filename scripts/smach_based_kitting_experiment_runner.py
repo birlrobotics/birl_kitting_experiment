@@ -6,6 +6,10 @@ from birl_kitting_experiment.smach_FSM import (
     assembly_user_defined_sm
 )
 
+from birl_kitting_experiment.hardcoded_data import (
+    reverting_statistics
+)
+
 if __name__ == '__main__':
     sm = assembly_user_defined_sm()
-    smach_runner.run(sm)
+    smach_runner.run(sm, reverting_statistics)
