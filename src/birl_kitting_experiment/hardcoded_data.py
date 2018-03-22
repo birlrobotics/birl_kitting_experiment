@@ -11,3 +11,20 @@ place_pose.orientation.x= 0.999937797296
 place_pose.orientation.y= -0.0043522273979
 place_pose.orientation.z= -0.00938816830392
 place_pose.orientation.w= 0.00416196480575
+
+reverting_statistics = {
+    'MoveToPrePickPoseWithEmptyHand': {
+        'MoveToPrePickPoseWithEmptyHand': 1,
+    },
+    'Pick': {
+        'Pick': 1,
+    },
+    'MoveToPrePlacePoseWithFullHand': {
+        'MoveToPrePlacePoseWithFullHand': 1,
+    },
+    'Place': {
+        'Place': 1,
+    },
+}
+
+reverting_statistics['MoveToPrePickPoseWithFullHand'] = reverting_statistics['MoveToPrePlacePoseWithFullHand']
