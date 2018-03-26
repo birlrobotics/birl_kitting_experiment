@@ -80,9 +80,9 @@ class DeterminePickPose(smach.State):
             if DeterminePickPose.already_pick_count >= 3:
                 return 'VisionSaysNone'
             DeterminePickPose.pick_pose = Pose()
-            DeterminePickPose.pick_pose.position.x = 0.71911746461+random.uniform(-0.1, +0.1)
-            DeterminePickPose.pick_pose.position.y = -0.134129746892+random.uniform(-0.1, +0.1)
-            DeterminePickPose.pick_pose.position.z = 0.015673091393+random.uniform(-0.1, +0.1)
+            DeterminePickPose.pick_pose.position.x = 0.71911746461+random.uniform(-0.05, +0.05)
+            DeterminePickPose.pick_pose.position.y = -0.134129746892+random.uniform(-0.05, +0.05)
+            DeterminePickPose.pick_pose.position.z = 0.015673091393+random.uniform(-0.05, +0.05)
             DeterminePickPose.pick_pose.orientation = Quaternion(
                 x= -0.25322831688,
                 y= 0.966477494136,
@@ -172,7 +172,10 @@ class DeterminePlacePose(smach.State):
         self.depend_on_prev_state = False # Set this flag accordingly
 
     def determine_successor(self): # Determine next state
-        DeterminePlacePose.place_pose = hardcoded_data.place_pose
+        DeterminePlacePose.place_pose = copy.deepcopy(hardcoded_data.place_pose)
+        if SIM_MODE:
+            DeterminePlacePose.place_pose.position.z -= 0.2
+            DeterminePlacePose.place_pose.position.y += 0.2
 
         pos = DeterminePlacePose.place_pose.position
         ori = DeterminePlacePose.place_pose.orientation
