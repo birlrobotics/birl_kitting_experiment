@@ -14,7 +14,7 @@
     <node name="ar_track_alvar" pkg="ar_track_alvar" type="findMarkerBundlesNoKinect" respawn="false" output="screen"
         args="$(arg marker_size) $(arg max_new_marker_error) $(arg max_track_error) $(arg cam_image_topic) $(arg cam_info_topic) $(arg output_frame) $(arg bundle_files)" />
 
-    <!--<node name="publishMarkersInfo" pkg="birl_kitting_experiment" type="alvar_marker_to_baxter_picking_pose.py" />-->
+   <node name="publishMarkersInfo" pkg="birl_kitting_experiment" type="alvar_marker_to_baxter_picking_pose.py" />
 
 </launch>
 		

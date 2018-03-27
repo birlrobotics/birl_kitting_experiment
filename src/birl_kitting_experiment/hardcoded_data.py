@@ -17,14 +17,16 @@ reverting_statistics = {
         'MoveToPrePickPoseWithEmptyHand': 1,
     },
     'Pick': {
-        'Pick': 1,
+        'MoveToPrePickPoseWithEmptyHand': 22,
+        'Pick': 16,
     },
     'MoveToPrePlacePoseWithFullHand': {
-        'MoveToPrePlacePoseWithFullHand': 1,
+        'MoveToPrePickPoseWithEmptyHand': 2,
+        'Pick':2,
     },
     'Place': {
         'Place': 1,
     },
 }
 
-reverting_statistics['MoveToPrePickPoseWithFullHand'] = reverting_statistics['MoveToPrePlacePoseWithFullHand']
+reverting_statistics['MoveToPrePickPoseWithFullHand'] = reverting_statistics['Pick']

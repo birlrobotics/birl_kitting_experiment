@@ -103,6 +103,12 @@ class MoveToPrePickPoseWithEmptyHand(smach.State):
         return dill.load(open(os.path.join(dmp_model_dir, 'home_to_pre_pick'), 'r'))
 
     def get_pose_goal(self):
+        try:
+            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=10)
+            DeterminePickPose.pick_pose = msg.markers[0].pose.pose
+        except Exception as exc:
+            pass
+
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
         pos = pose.position
         ori = pose.orientation
@@ -135,6 +141,12 @@ class Pick(smach.State):
         return dill.load(open(os.path.join(dmp_model_dir, 'pre_pick_to_pick'), 'r'))
 
     def get_pose_goal(self):
+        try:
+            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=10)
+            DeterminePickPose.pick_pose = msg.markers[0].pose.pose
+        except Exception as exc:
+            pass
+
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
         return pose
 

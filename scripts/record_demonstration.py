@@ -6,7 +6,7 @@ from baxter_core_msgs.msg import EndpointState
 from smach_based_introspection_framework.configurables import dmp_cmd_fields
 from birl_skill_management.util import get_eval_postfix
 import numpy
-import os
+import os,ipdb
 list_of_postfix = get_eval_postfix(dmp_cmd_fields, 'pose')
 
 dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
