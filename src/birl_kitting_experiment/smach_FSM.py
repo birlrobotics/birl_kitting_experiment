@@ -265,7 +265,7 @@ class MoveToPrePlacePoseWithEmptyHand(smach.State):
     def determine_successor(self): # Determine next state
         return 'Successful'
 
-def assembly_user_defined_sm():
+def assembly_user_defined_sm():  # interface
     sm = smach.StateMachine(outcomes=['TaskFailed', 'TaskSuccessful'])
     with sm:
         smach.StateMachine.add(
