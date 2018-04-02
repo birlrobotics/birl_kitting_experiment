@@ -67,7 +67,7 @@ class DeterminePickPose(smach.State):
 
         if not SIM_MODE:
             try:
-                msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=10)
+                msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=3)
             except Exception as exc:
                 rospy.logerr("waiting picking pose failed: %s"%exc)
                 msg = None
@@ -104,7 +104,7 @@ class MoveToPrePickPoseWithEmptyHand(smach.State):
 
     def get_pose_goal(self):
         try:
-            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=10)
+            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=3)
             DeterminePickPose.pick_pose = msg.markers[0].pose.pose
         except Exception as exc:
             pass
@@ -142,7 +142,7 @@ class Pick(smach.State):
 
     def get_pose_goal(self):
         try:
-            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=10)
+            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=3)
             DeterminePickPose.pick_pose = msg.markers[0].pose.pose
         except Exception as exc:
             pass
