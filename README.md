@@ -10,6 +10,11 @@
     [Open a new terminal]
     roslaunch openni2_launch openni2.launch
     ```
+    OR (use the left hand camera as input) 
+    ```
+    rosrun birl_kitting_experiment setup_baxter_left_hand_camera.py
+    rosrun birl_kitting_experiment set_left_arm2static_pose.py
+    ```
 
 1. Launch alvar recognition with bundles, set up camera-robot transform:
 
@@ -30,6 +35,7 @@
     ```bash
     [Open a new terminal]
     rosrun birl_baxter_online_urdf_update update_urdf.py
+    rosrun baxter_interface joint_trajectory_action_server.py
     roslaunch birl_moveit_r_ft_config birl_baxter_gripper.launch
     ```
 
@@ -62,4 +68,8 @@ If you want to run the experiment again, repeat the last step.
 3.To train a DMP models of all recorded demonstraions: cd ../birl_kitting_expereiment/scripts/
 ```
 python cook_dmp_models_for_smach_states.py
+```
+4. For manually active the anomal
+```
+rosrun smach_based_introspection_framework send_manual_anomaly_signal.py
 ```

@@ -22,7 +22,7 @@ dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models
 
 SIM_MODE = False
 pick_hover_height = 0.10
-place_step_size = 0.07
+place_step_size = 0.0
 place_hover_height = 0.10
 
 class MoveToHomePose(smach.State):
