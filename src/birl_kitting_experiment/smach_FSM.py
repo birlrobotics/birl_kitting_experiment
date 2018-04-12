@@ -21,9 +21,9 @@ dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
 dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models')
 
 SIM_MODE = False
-pick_hover_height = 0.10
+pick_hover_height = 0.15
 place_step_size = 0.0
-place_hover_height = 0.10
+place_hover_height = 0.1
 
 class MoveToHomePose(smach.State):
     def __init__(self):

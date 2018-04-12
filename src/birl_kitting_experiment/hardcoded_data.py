@@ -14,26 +14,18 @@ place_pose.orientation.w= 0.00416196480575
 
 reverting_statistics = {
     'MoveToPrePickPoseWithEmptyHand': {
-        "human_collision": {
-            'MoveToPrePickPoseWithEmptyHand': 1,
-        },
     },
     'Pick': {
         "tool_collision": {
-            'MoveToPrePickPoseWithEmptyHand': 22,
-            'Pick': 16,
+            'MoveToPrePickPoseWithEmptyHand': 40,
         },
     },
     'MoveToPrePlacePoseWithFullHand': {
         "object_slip": {
-            'MoveToPrePickPoseWithEmptyHand': 2,
-            'Pick':2,
+            'Pick': 30,
         },
     },
     'Place': {
-        "human_collision": {
-            'Place': 1,
-        },
     },
 }
 

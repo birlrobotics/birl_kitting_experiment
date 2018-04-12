@@ -47,6 +47,7 @@
     
     [Open a new terminal]
     rosrun tactilesensors4 PollData4
+    rosrun tactilesensors4 tactile_static.py
     ```
 
 1. Run the experiment:
