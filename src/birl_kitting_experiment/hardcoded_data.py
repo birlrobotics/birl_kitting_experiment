@@ -22,7 +22,7 @@ reverting_statistics = {
 
         },
        "human_collision": {
-            'MoveToPrePlacePoseWithFHandull': 1,
+            'MoveToPrePlacePoseWithFHandull': 25,
         },
        "object_slip": {
             'Pick': 60,
@@ -33,12 +33,12 @@ reverting_statistics = {
             'MoveToPrePickPoseWithEmptyHand': 1,
         },
              },
-    'MoveToPrePlacePoseWithHandull': {
+    'MoveToPrePlacePoseWithFullHand': {
         "object_slip": {
             'Pick': 30,                  
         },
         "human_collision":{
-            'MoveToPrePlacePoseWithFHandull':1,
+            'MoveToPrePlacePoseWithFullHand':1,
         },
     },
     'Place': {
