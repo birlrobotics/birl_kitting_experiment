@@ -43,12 +43,12 @@ class MoveToHomePose(smach.State):
             rospy.wait_for_service('/robotiq_wrench_calibration_service', timeout=3)
             trigger = rospy.ServiceProxy('/robotiq_wrench_calibration_service', Trigger)
             resp = trigger()
-            rospy.wait_for_service('/tactile_reset_service', timeout=3)
-            trigger = rospy.ServiceProxy('/tactile_reset_service', Trigger)
+            rospy.wait_for_service('/robotiq_tactile_static_calibration_service', timeout=3)
+            trigger = rospy.ServiceProxy('/robotiq_tactile_static_calibration_service', Trigger)
             resp = trigger()
             rospy.sleep(5)
         except Exception as exc:
-            rospy.logerr("calling force sensor calibration failed: %s"%exc)
+            rospy.logerr("calling sensor calibration failed: %s"%exc)
 
     def determine_successor(self): # Determine next state
         return 'Successful'
