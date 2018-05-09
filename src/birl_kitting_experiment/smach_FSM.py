@@ -131,11 +131,13 @@ class Pick(smach.State):
         g = baxter_interface.Gripper('right')
         rospy.sleep(1)
         g.open()
+        rospy.sleep(2)
 
     def after_motion(self):
         g = baxter_interface.Gripper('right')
         rospy.sleep(1)
         g.close()
+        rospy.sleep(2)
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'pre_pick_to_pick'), 'r'))
