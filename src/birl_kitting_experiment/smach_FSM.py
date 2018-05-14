@@ -128,13 +128,15 @@ class Pick(smach.State):
         self.depend_on_prev_state = True # Set this flag accordingly
 
     def before_motion(self):
+        g = baxter_interface.Gripper('right')
         rospy.sleep(1)
-        baxter_interface.Gripper('right').open()
+        g.open()
         rospy.sleep(2)
 
     def after_motion(self):
+        g = baxter_interface.Gripper('right')
         rospy.sleep(1)
-        baxter_interface.Gripper('right').close()
+        g.close()
         rospy.sleep(2)
 
     def get_dmp_model(self):
@@ -230,8 +232,9 @@ class Place(smach.State):
         self.depend_on_prev_state = True # Set this flag accordingly
 
     def after_motion(self):
+        g = baxter_interface.Gripper('right')
         rospy.sleep(1)
-        baxter_interface.Gripper('right').open()
+        g.open()
         rospy.sleep(2)
 
     def get_dmp_model(self):
