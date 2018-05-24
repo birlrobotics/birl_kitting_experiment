@@ -50,6 +50,12 @@
     rosrun tactilesensors4 tactile_static.py
     ```
 
+1.ssh command:
+    ```
+    [open a new terminal]
+     ssh ruser@011405P0002.local
+    ```
+
 1. Run the experiment:
 
     ```bash
