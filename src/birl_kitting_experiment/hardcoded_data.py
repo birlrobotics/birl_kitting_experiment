@@ -22,7 +22,12 @@ reverting_statistics = {
 
         },
        "human_collision": {
-            'MoveToPrePlacePoseWithFHandull': 25,
+            'Pick': 25,
+        },
+    },
+    'MoveToPrePickPoseWithFullHand': {
+       "human_collision": {
+            'MoveToPrePickPoseWithFullHand': 25,
         },
        "object_slip": {
             'Pick': 20,
@@ -32,7 +37,7 @@ reverting_statistics = {
             'Pick': 24,
             'MoveToPrePickPoseWithEmptyHand': 1,
         },
-             },
+    },
     'MoveToPrePlacePoseWithFullHand': {
         "object_slip": {
             'Pick': 25,                  
@@ -47,5 +52,3 @@ reverting_statistics = {
         },
     },
 }
-
-reverting_statistics['MoveToPrePickPoseWithFullHand'] = reverting_statistics['Pick']
