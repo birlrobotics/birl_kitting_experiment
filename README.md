@@ -23,13 +23,6 @@
     roslaunch birl_kitting_experiment alvar_marker_demo.launch
     ```
 
-1. Publish available Baxter picking poses via topic(/baxter_available_picking_pose) and TF(/baxter_picking_pose_[marker id]):
-
-    ```bash
-    [Open a new terminal]
-    rosrun birl_kitting_experiment alvar_marker_to_baxter_picking_pose.py
-    ```
-
 1. Setup motion services:
 
     ```bash
@@ -47,7 +40,6 @@
     
     [Open a new terminal]
     rosrun tactilesensors4 PollData4
-    rosrun tactilesensors4 tactile_static.py
     ```
 
 1.ssh command:
