@@ -16,6 +16,9 @@ import hardcoded_data
 import dill
 from ar_track_alvar_msgs.msg import AlvarMarkers
 import rospy
+from baxter_core_msgs.msg import (
+    EndpointState,
+)
 
 dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
 dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models')
@@ -165,7 +168,8 @@ class MoveToPrePickPoseWithFullHand(smach.State):
         return dill.load(open(os.path.join(dmp_model_dir, 'pick_to_pre_pick'), 'r'))
 
     def get_pose_goal(self):
-        pose = copy.deepcopy(DeterminePickPose.pick_pose)
+        msg = rospy.wait_for_message("/robot/limb/right/commanded_endpoint_state", EndpointState, timeout=3)
+        pose = msg.pose
         pos = pose.position
         ori = pose.orientation
         base_to_pose_mat = numpy.dot(translation_matrix((pos.x, pos.y, pos.z)), quaternion_matrix((ori.x, ori.y, ori.z, ori.w)))
