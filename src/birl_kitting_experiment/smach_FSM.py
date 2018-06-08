@@ -70,7 +70,7 @@ class DeterminePickPose(smach.State):
 
         if not SIM_MODE:
             try:
-                msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=3)
+                msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=1)
             except Exception as exc:
                 rospy.logerr("waiting picking pose failed: %s"%exc)
                 msg = None
@@ -168,7 +168,7 @@ class MoveToPrePickPoseWithFullHand(smach.State):
         return dill.load(open(os.path.join(dmp_model_dir, 'pick_to_pre_pick'), 'r'))
 
     def get_pose_goal(self):
-        msg = rospy.wait_for_message("/robot/limb/right/commanded_endpoint_state", EndpointState, timeout=3)
+        msg = rospy.wait_for_message("/robot/limb/right/endpoint_state", EndpointState, timeout=3)
         pose = msg.pose
         pos = pose.position
         ori = pose.orientation
