@@ -19,6 +19,7 @@ import rospy
 from baxter_core_msgs.msg import (
     EndpointState,
 )
+import tf
 
 dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
 dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models')
@@ -26,7 +27,7 @@ dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models
 SIM_MODE = False
 pick_hover_height = 0.15
 place_step_size = 0.0
-place_hover_height = 0.1
+place_hover_height = 0.2
 
 class MoveToHomePose(smach.State):
     def __init__(self):
@@ -168,11 +169,21 @@ class MoveToPrePickPoseWithFullHand(smach.State):
         return dill.load(open(os.path.join(dmp_model_dir, 'pick_to_pre_pick'), 'r'))
 
     def get_pose_goal(self):
-        msg = rospy.wait_for_message("/robot/limb/right/endpoint_state", EndpointState, timeout=3)
-        pose = msg.pose
-        pos = pose.position
-        ori = pose.orientation
-        base_to_pose_mat = numpy.dot(translation_matrix((pos.x, pos.y, pos.z)), quaternion_matrix((ori.x, ori.y, ori.z, ori.w)))
+        listener = tf.TransformListener()
+        look_up_t = rospy.Time(0)
+        listener.waitForTransform('base', 'right_gripper', look_up_t, rospy.Duration(3))
+        pos, ori = listener.lookupTransform('base', 'right_gripper', look_up_t)
+        base_to_pose_mat = listener.fromTranslationRotation(pos, ori) 
+
+        pose = Pose()
+        pose.position.x = pos[0]
+        pose.position.y = pos[1]
+        pose.position.z = pos[2]
+        pose.orientation.x = ori[0]
+        pose.orientation.y = ori[1]
+        pose.orientation.z = ori[2]
+        pose.orientation.w = ori[3]
+
         pose.position.x -= pick_hover_height*base_to_pose_mat[0, 2]
         pose.position.y -= pick_hover_height*base_to_pose_mat[1, 2]
         pose.position.z -= pick_hover_height*base_to_pose_mat[2, 2]
