@@ -27,7 +27,7 @@ dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models
 SIM_MODE = False
 pick_hover_height = 0.15
 place_step_size = 0.0
-place_hover_height = 0.15
+place_hover_height = 0.05
 
 class MoveToHomePose(smach.State):
     def __init__(self):
@@ -271,9 +271,9 @@ class Place(smach.State):
         pose.orientation.z = ori[2]
         pose.orientation.w = ori[3]
 
-        pose.position.x += place_hover_height*base_to_pose_mat[0, 2]
-        pose.position.y += place_hover_height*base_to_pose_mat[1, 2]
-        pose.position.z += place_hover_height*base_to_pose_mat[2, 2]
+        pose.position.x += (0.05+place_hover_height)*base_to_pose_mat[0, 2]
+        pose.position.y += (0.05+place_hover_height)*base_to_pose_mat[1, 2]
+        pose.position.z += (0.05+place_hover_height)*base_to_pose_mat[2, 2]
         return pose
 
     def determine_successor(self): # Determine next state
