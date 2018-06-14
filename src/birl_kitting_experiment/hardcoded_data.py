@@ -40,7 +40,7 @@ reverting_statistics = {
     },
     'MoveToPrePlacePoseWithFullHand': {
         "object_slip": {
-            'Pick': 25,                  
+            'MoveToPrePickPoseWithEmptyHand': 25,                  
         },
         "human_collision":{
             'MoveToPrePlacePoseWithFullHand':25,
