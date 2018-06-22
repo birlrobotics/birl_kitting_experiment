@@ -4,13 +4,13 @@ from geometry_msgs.msg import (
 )
 
 place_pose = Pose()
-place_pose.position.x = 0.441
-place_pose.position.y = -0.635
-place_pose.position.z = -0.010
-place_pose.orientation.x= 0.999
-place_pose.orientation.y= -0.046
-place_pose.orientation.z= 0.04
-place_pose.orientation.w= 0.004
+place_pose.position.x = 0.526379460142
+place_pose.position.y = -0.818221808593
+place_pose.position.z = 0.0342286718843
+place_pose.orientation.x= 0.999937797296
+place_pose.orientation.y= -0.0043522273979
+place_pose.orientation.z= -0.00938816830392
+place_pose.orientation.w= 0.00416196480575
 
 reverting_statistics = {
     'MoveToPrePickPoseWithEmptyHand': {
