@@ -40,7 +40,15 @@
     
     [Open a new terminal]
     rosrun tactilesensors4 PollData4
+    
+    [Open a new terminal]
+    rosrun smach_based_introspection_framework timeseries_publisher.py
     ```
+    
+1. Publish the state switch and tag_multimodal_topic_and_service
+   ```
+   rosrun smach_based_introspection_framework tag_multimodal_topic_and_service.py
+   ```
 
 1.ssh command:
     ```
@@ -49,26 +57,37 @@
     ```
 
 1. Run the experiment:
-
     ```bash
     [Open a new terminal]
     rosrun birl_kitting_experiment smach_based_kitting_experiment_runner.py
+    If you want to run the experiment again, repeat this step.
     ```
 
-If you want to run the experiment again, repeat the last step.
+1. Open the anomaly detection service
+   ```
+   rosrun smach_based_introspection_framework anomaly_detection.py
+   ```
+   
+1. Open anomaly classification service
+   ```
+   rosrun smach_based_introspection_framework redis_based_anomaly_classification.py
+   ```
 
 # How to record/train DMP
 1. To record a demonstraion: cd ../birl_kitting_expereiment/scripts/
    ```
    python record_demonstration.py --name "DEMONSTRATION_NAME"
    ```
+   
 2. Kinesthetic teaching the robot arm for recording the demonstration until finish, and then press CTRL+C
 
 3.To train a DMP models of all recorded demonstraions: cd ../birl_kitting_expereiment/scripts/
-```
-python cook_dmp_models_for_smach_states.py
-```
+   ```
+   python cook_dmp_models_for_smach_states.py
+   ```
+   
 4. For manually active the anomal
-```
-rosrun smach_based_introspection_framework send_manual_anomaly_signal.py
-```
+   ```
+   rosrun smach_based_introspection_framework send_manual_anomaly_signal.py
+   ```
+
