@@ -50,6 +50,12 @@
    rosrun smach_based_introspection_framework tag_multimodal_topic_and_service.py
    ```
 
+1.ssh command:
+    ```
+    [open a new terminal]
+     ssh ruser@011405P0002.local
+    ```
+
 1. Run the experiment:
     ```bash
     [Open a new terminal]

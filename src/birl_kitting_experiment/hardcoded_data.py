@@ -4,48 +4,51 @@ from geometry_msgs.msg import (
 )
 
 place_pose = Pose()
-place_pose.position.x = 0.526379460142
-place_pose.position.y = -0.818221808593
-place_pose.position.z = 0.0342286718843
-place_pose.orientation.x= 0.999937797296
-place_pose.orientation.y= -0.0043522273979
-place_pose.orientation.z= -0.00938816830392
-place_pose.orientation.w= 0.00416196480575
+place_pose.position.x = 0.441
+place_pose.position.y = -0.635
+place_pose.position.z = -0.010
+place_pose.orientation.x= 0.999
+place_pose.orientation.y= -0.046
+place_pose.orientation.z= 0.04
+place_pose.orientation.w= 0.004
 
 reverting_statistics = {
     'MoveToPrePickPoseWithEmptyHand': {
-        "human_collision":{'MoveToPrePickPoseWithEmptyHand':1},
+        "human_collision":{'MoveToPrePickPoseWithEmptyHand':25},
                                       },
     'Pick': {
         "tool_collision": {
-            'MoveToPrePickPoseWithEmptyHand': 40,
+            'MoveToPrePickPoseWithEmptyHand': 25,
 
         },
        "human_collision": {
-            'MoveToPrePlacePoseWithFHandull': 25,
+            'Pick': 25,
+        },
+    },
+    'MoveToPrePickPoseWithFullHand': {
+       "human_collision": {
+            'MoveToPrePickPoseWithFullHand': 25,
         },
        "object_slip": {
-            'Pick': 60,
-            "MoveToPrePickPoseWithEmptyHand":10,
+            'Pick': 20,
+            "MoveToPrePickPoseWithEmptyHand":5,
         },
        "no_object": {
-            'Pick': 59,
+            'Pick': 24,
             'MoveToPrePickPoseWithEmptyHand': 1,
         },
-             },
+    },
     'MoveToPrePlacePoseWithFullHand': {
         "object_slip": {
-            'Pick': 30,                  
+            'MoveToPrePickPoseWithEmptyHand': 25,                  
         },
         "human_collision":{
-            'MoveToPrePlacePoseWithFullHand':1,
+            'MoveToPrePlacePoseWithFullHand':25,
         },
     },
     'Place': {
         "human_collision": {
-           'Place': 1,
+           'Place': 25,
         },
     },
 }
-
-reverting_statistics['MoveToPrePickPoseWithFullHand'] = reverting_statistics['Pick']
