@@ -21,9 +21,9 @@ dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
 dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models')
 
 SIM_MODE = False
-pick_hover_height = 0.10
-place_step_size = 0.07
-place_hover_height = 0.10
+pick_hover_height = 0.15
+place_step_size = 0.0
+place_hover_height = 0.1
 
 class MoveToHomePose(smach.State):
     def __init__(self):
@@ -43,12 +43,12 @@ class MoveToHomePose(smach.State):
             rospy.wait_for_service('/robotiq_wrench_calibration_service', timeout=3)
             trigger = rospy.ServiceProxy('/robotiq_wrench_calibration_service', Trigger)
             resp = trigger()
-            rospy.wait_for_service('/tactile_reset_service', timeout=3)
-            trigger = rospy.ServiceProxy('/tactile_reset_service', Trigger)
+            rospy.wait_for_service('/robotiq_tactile_static_calibration_service', timeout=3)
+            trigger = rospy.ServiceProxy('/robotiq_tactile_static_calibration_service', Trigger)
             resp = trigger()
             rospy.sleep(5)
         except Exception as exc:
-            rospy.logerr("calling force sensor calibration failed: %s"%exc)
+            rospy.logerr("calling sensor calibration failed: %s"%exc)
 
     def determine_successor(self): # Determine next state
         return 'Successful'
@@ -131,11 +131,13 @@ class Pick(smach.State):
         g = baxter_interface.Gripper('right')
         rospy.sleep(1)
         g.open()
+        rospy.sleep(2)
 
     def after_motion(self):
         g = baxter_interface.Gripper('right')
         rospy.sleep(1)
         g.close()
+        rospy.sleep(2)
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'pre_pick_to_pick'), 'r'))
@@ -230,7 +232,10 @@ class Place(smach.State):
         self.depend_on_prev_state = True # Set this flag accordingly
 
     def after_motion(self):
-        baxter_interface.Gripper('right').open()
+        g = baxter_interface.Gripper('right')
+        rospy.sleep(1)
+        g.open()
+        rospy.sleep(2)
 
     def get_dmp_model(self):
         return dill.load(open(os.path.join(dmp_model_dir, 'pre_place_to_place'), 'r'))
