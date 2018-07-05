@@ -90,4 +90,18 @@
    ```
    rosrun smach_based_introspection_framework send_manual_anomaly_signal.py
    ```
-
+# How to record the adaptation (Human-in-the-loop) recovery policy
+### The recovery skill is label begin with 1000 and corrspounds the specific skill
+1. Whether the valuable in smach_based_instospection_framework/configurables.py is **True** or not.
+   ```
+   HUMAN_AS_MODEL_MODL = True/False
+   ```
+2. Pausing the robot movement while robot encounter an anomaly and label it carefully, for instance
+   ```
+   tool collision
+   ```
+3. And then following the instruction to record the human teaching behavior:
+   ```
+   start
+   end
+   ```
