@@ -1,0 +1,24 @@
+- git:
+    local-name: smach_based_introspection_framework
+    uri: https://github.com/birlrobotics/smach_based_introspection_framework.git
+    version: master
+
+- git:
+    local-name: birl_hmm
+    uri: https://github.com/birlrobotics/birl_hmm.git
+    version: master
+
+- git:
+    local-name: birl_dmp
+    uri: https://github.com/birlrobotics/birl_dmp.git
+    version: master
+
+- git:
+    local-name: rostopics_to_timeseries
+    uri: https://github.com/birlrobotics/rostopics_to_timeseries.git
+    version: master
+
+- git:
+    local-name: parameters_combinator
+    uri: https://github.com/birlrobotics/parameters_combinator.git
+    version: master
