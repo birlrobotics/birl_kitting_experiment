@@ -22,3 +22,23 @@
     local-name: parameters_combinator
     uri: https://github.com/birlrobotics/parameters_combinator.git
     version: master
+    
+- git:
+    local-name: birl_moveit_sets
+    uri: https://github.com/birlrobotics/birl_moveit_sets.git
+    version: master
+
+- git:
+    local-name: birl_tactile_sensor
+    uri: https://github.com/birlrobotics/birl_tactile_sensor.git
+    version: master
+
+- git:
+    local-name: birl_baxter_online_urdf_update
+    uri: https://github.com/birlrobotics/birl_baxter_online_urdf_update.git
+    version: master
+
+- git:
+    local-name: birl_sensors
+    uri: https://github.com/birlrobotics/birl_sensors.git
+    version: master
