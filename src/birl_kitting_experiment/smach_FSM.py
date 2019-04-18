@@ -377,7 +377,7 @@ def assembly_user_defined_sm():  # interface
             MoveToPrePlacePoseWithEmptyHand.__name__,
             MoveToPrePlacePoseWithEmptyHand(),
             transitions={
-                'Successful': MoveToHomePose.__name__
+                'Successful': "TaskSuccessful"
             }
-        )
+        )    
     return sm

@@ -21,13 +21,13 @@ def profile_dmp(list_of_mat, dmp_model, fname):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')  
     for mat in list_of_mat:
-        ax.plot(mat[:, 0], mat[:, 1], mat[:, 2], color='black')
+        ax.plot(mat[:, 0], mat[:, 1], mat[:, 2], color='black', label="raw")
 
     for mat in list_of_mat:
         start = mat[0].copy()
         end = mat[-1].copy()
         gen_mat = generalize_via_dmp(start, end, dmp_model)
-        ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='green')
+        ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='gold',label = 'gen_with_raw_st_end')
 
     for i in numpy.arange(0.01, 0.1, 0.01):
         print i
@@ -36,7 +36,7 @@ def profile_dmp(list_of_mat, dmp_model, fname):
             end = mat[-1].copy()
             end[2] += i
             gen_mat = generalize_via_dmp(start, end, dmp_model)
-            ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='blue')
+            ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='blue', label='generation')
 
     for mat in list_of_mat:
         for i in range(3):
@@ -44,12 +44,13 @@ def profile_dmp(list_of_mat, dmp_model, fname):
             #start = mat[0].copy()+numpy.random.normal(0,pow(0.1,i),mat.shape[1])
             end = mat[-1].copy()+numpy.random.normal(0,pow(0.1,i),mat.shape[1])
             gen_mat = generalize_via_dmp(start, end, dmp_model)
-            ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='red')
+            ax.plot(gen_mat[:, 0], gen_mat[:, 1], gen_mat[:, 2], color='red',label = 'useless')
 
     ax.set_xlim3d(0, 2)
     ax.set_ylim3d(-2, 2)
     ax.set_zlim3d(-2, 2)
     ax.set_title(fname)
+    plt.legend()
     fig.show()
 
 def filter_static_points(mat):
@@ -74,7 +75,10 @@ if __name__ == '__main__':
         d[label].append(f)
     print d
 
-    for label in d: 
+    for label in d:
+        if os.path.exists(os.path.join(dmp_model_dir, label)):
+            print "model exist, ganna to skip"
+            continue
         list_of_mat = [filter_static_points(numpy.load(f)) for f in d[label]]
 
         orig_mat = list_of_mat[0]    
@@ -90,4 +94,4 @@ if __name__ == '__main__':
 
         profile_dmp(list_of_mat, result['model'], label)
     
-    raw_input()
+    raw_input("press any key to exit")
