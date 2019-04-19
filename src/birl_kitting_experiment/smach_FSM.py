@@ -1,3 +1,4 @@
+import smach_ros
 import smach
 from geometry_msgs.msg import (
     Pose,
@@ -11,7 +12,7 @@ from tf.transformations import (
 )
 import baxter_interface
 import numpy
-import os
+import os,sys
 import hardcoded_data
 import dill
 from ar_track_alvar_msgs.msg import AlvarMarkers
@@ -379,5 +380,15 @@ def assembly_user_defined_sm():  # interface
             transitions={
                 'Successful': "TaskSuccessful"
             }
-        )    
+        )
     return sm
+
+if __name__ == '__main__':
+    rospy.init_node('baxter_kitting_exp')
+    sm = assembly_user_defined_sm()
+    sis = smach_ros.IntrospectionServer('MY_SERVER', sm, '/SM_ROOT')
+    sis.start()
+    rospy.spin()
+    sis.stop()
+    sys.exit()
+
