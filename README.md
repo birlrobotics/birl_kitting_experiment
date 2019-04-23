@@ -105,3 +105,10 @@
    start
    end
    ```
+4. extract the adaptation demonstration data:
+   ```
+   roscd smach_based_introspection_framework
+   cd src/smach_based_introspection_framework/offline_part
+   python process_experiment_record_to_dataset.py
+   python process_dataset_to_models.py (we commonly comment the command for generating introspection and classification models)
+   ```
