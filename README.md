@@ -16,7 +16,7 @@
     rosrun birl_kitting_experiment set_left_arm2static_pose.py
     ```
 
-1. Launch alvar recognition with bundles, set up camera-robot transform:
+    . Launch alvar recognition with bundles, set up camera-robot transform:
 
     ```bash
     [Open a new terminal]
