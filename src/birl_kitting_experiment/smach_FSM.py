@@ -20,6 +20,11 @@ from baxter_core_msgs.msg import (
     EndpointState,
 )
 import tf
+from smach_based_introspection_framework._constant import (
+    latest_model_folder,
+)
+from smach_based_introspection_framework.online_part.smach_modifier import dmp_execute
+
 
 dir_of_this_script = os.path.dirname(os.path.realpath(__file__))
 dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models')
@@ -27,7 +32,7 @@ dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models
 SIM_MODE = False
 pick_hover_height = 0.15
 place_step_size = 0.0
-place_hover_height = 0.05
+place_hover_height = 0.15
 
 class MoveToHomePose(smach.State):
     def __init__(self):
@@ -47,9 +52,9 @@ class MoveToHomePose(smach.State):
             rospy.wait_for_service('/robotiq_wrench_calibration_service', timeout=3)
             trigger = rospy.ServiceProxy('/robotiq_wrench_calibration_service', Trigger)
             resp = trigger()
-            rospy.wait_for_service('/robotiq_tactile_static_calibration_service', timeout=3)
-            trigger = rospy.ServiceProxy('/robotiq_tactile_static_calibration_service', Trigger)
-            resp = trigger()
+            # rospy.wait_for_service('/robotiq_tactile_static_calibration_service', timeout=3)
+            # trigger = rospy.ServiceProxy('/robotiq_tactile_static_calibration_service', Trigger)
+            # resp = trigger()
             rospy.sleep(5)
         except Exception as exc:
             rospy.logerr("calling sensor calibration failed: %s"%exc)
@@ -127,7 +132,8 @@ class MoveToPrePickPoseWithEmptyHand(smach.State):
 
 class Pick(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['Successful'])
+        smach.State.__init__(self,  outcomes=['Successful'],
+                                    output_keys=['goal_pose_output'])
         self.state_no = 4 # Skill tag
         self.depend_on_prev_state = True # Set this flag accordingly
 
@@ -154,6 +160,7 @@ class Pick(smach.State):
             pass
 
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
+        pose.position.y -= 0.03
         return pose
 
     def determine_successor(self): # Determine next state
@@ -313,6 +320,184 @@ class MoveToPrePlacePoseWithEmptyHand(smach.State):
     def determine_successor(self): # Determine next state
         return 'Successful'
 
+
+class ChangePickPose_1(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['Successful'])
+        self.state_no = 1000 # Skill tag
+        self.depend_on_prev_state = True # Set this flag accordingly
+
+    def before_motion(self):
+        g = baxter_interface.Gripper('right')
+        rospy.sleep(1)
+        g.open()
+        rospy.sleep(2)
+
+    def after_motion(self):
+        g = baxter_interface.Gripper('right')
+        rospy.sleep(1)
+        g.close()
+        rospy.sleep(2)
+
+    def get_modified_plan(self,robot, group):
+       goal_modification_info = self.get_modified_goal_info()
+       dmp_model = self.get_adaptation_dmp_model()
+       original_pose_goal = self.get_pose_goal()
+       return dmp_execute.get_dmp_plan(robot, group, dmp_model, original_pose_goal, goal_modification_info)
+        
+    def get_adaptation_dmp_model(self):
+        dmp_model_path = os.path.join(latest_model_folder, 'tag_1000', 'dmp_model')
+        return dill.load(open(dmp_model_path, 'r'))
+        
+    def get_modified_goal_info(self):
+        goal_modification_info_path = os.path.join(latest_model_folder, 'tag_1000', 'goal_modification_info')
+        return dill.load(open(goal_modification_info_path, 'r'))
+   
+    def get_pose_goal(self):
+        try:
+            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=3)
+            DeterminePickPose.pick_pose = msg.markers[0].pose.pose
+        except Exception as exc:
+            pass
+
+        pose = copy.deepcopy(DeterminePickPose.pick_pose)
+        pose.position.y -= 0.03
+        return pose
+
+    def determine_successor(self): # Determine next state
+        return 'Successful'
+
+class ChangePickPose_2(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['Successful'])
+        self.state_no = 1003 # Skill tag
+        self.depend_on_prev_state = True # Set this flag accordingly
+
+    def before_motion(self):
+        g = baxter_interface.Gripper('right')
+        rospy.sleep(1)
+        g.open()
+        rospy.sleep(2)
+
+    def after_motion(self):
+        g = baxter_interface.Gripper('right')
+        rospy.sleep(1)
+        g.close()
+        rospy.sleep(2)
+
+    def get_modified_plan(self,robot, group):
+       goal_modification_info = self.get_modified_goal_info()
+       dmp_model = self.get_adaptation_dmp_model()
+       original_pose_goal = self.get_pose_goal()
+       return dmp_execute.get_dmp_plan(robot, group, dmp_model, original_pose_goal, goal_modification_info)
+        
+    def get_adaptation_dmp_model(self):
+        dmp_model_path = os.path.join(latest_model_folder, 'tag_1003', 'dmp_model')
+        return dill.load(open(dmp_model_path, 'r'))
+        
+    def get_modified_goal_info(self):
+        goal_modification_info_path = os.path.join(latest_model_folder, 'tag_1003', 'goal_modification_info')
+        return dill.load(open(goal_modification_info_path, 'r'))
+   
+    def get_pose_goal(self):
+        try:
+            msg = rospy.wait_for_message("baxter_available_picking_pose", AlvarMarkers, timeout=3)
+            DeterminePickPose.pick_pose = msg.markers[0].pose.pose
+        except Exception as exc:
+            pass
+
+        pose = copy.deepcopy(DeterminePickPose.pick_pose)
+        return pose
+
+    def determine_successor(self): # Determine next state
+        return 'Successful'
+
+
+class AvoidWallCollision(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['Successful'])
+        self.state_no = 1001 # Skill tag
+        self.depend_on_prev_state = True # Set this flag accordingly
+
+    def get_modified_plan(self,robot, group):
+       goal_modification_info = self.get_modified_goal_info()
+       dmp_model = self.get_adaptation_dmp_model()
+       original_pose_goal = self.get_pose_goal()
+       return dmp_execute.get_dmp_plan(robot, group, dmp_model, original_pose_goal, goal_modification_info)
+        
+    def get_adaptation_dmp_model(self):
+        dmp_model_path = os.path.join(latest_model_folder, 'tag_1001', 'dmp_model')
+        return dill.load(open(dmp_model_path, 'r'))
+        
+    def get_modified_goal_info(self):
+        goal_modification_info_path = os.path.join(latest_model_folder, 'tag_1001', 'goal_modification_info')
+        return dill.load(open(goal_modification_info_path, 'r'))
+   
+    def get_pose_goal(self):
+        pose = copy.deepcopy(DeterminePlacePose.place_pose)
+        pos = pose.position
+        ori = pose.orientation
+        base_to_pose_mat = numpy.dot(translation_matrix((pos.x, pos.y, pos.z)), quaternion_matrix((ori.x, ori.y, ori.z, ori.w)))
+        pose.position.x -= place_hover_height*base_to_pose_mat[0, 2]
+        pose.position.y -= place_hover_height*base_to_pose_mat[1, 2]
+        pose.position.z -= place_hover_height*base_to_pose_mat[2, 2]
+        return pose
+
+    def determine_successor(self): # Determine next state
+        return 'Successful'
+
+
+class ChangePlacePose_1(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['Successful'])
+        self.state_no = 1002 # Skill tag
+        self.depend_on_prev_state = True # Set this flag accordingly
+
+    def after_motion(self):
+        g = baxter_interface.Gripper('right')
+        rospy.sleep(1)
+        g.open()
+        rospy.sleep(2)
+
+    def get_modified_plan(self,robot, group):
+       goal_modification_info = self.get_modified_goal_info()
+       dmp_model = self.get_adaptation_dmp_model()
+       original_pose_goal = self.get_pose_goal()
+       return dmp_execute.get_dmp_plan(robot, group, dmp_model, original_pose_goal, goal_modification_info)
+        
+    def get_adaptation_dmp_model(self):
+        dmp_model_path = os.path.join(latest_model_folder, 'tag_1001', 'dmp_model')
+        return dill.load(open(dmp_model_path, 'r'))
+        
+    def get_modified_goal_info(self):
+        goal_modification_info_path = os.path.join(latest_model_folder, 'tag_1001', 'goal_modification_info')
+        return dill.load(open(goal_modification_info_path, 'r'))
+
+    def get_pose_goal(self):
+        listener = tf.TransformListener()
+        look_up_t = rospy.Time(0)
+        listener.waitForTransform('base', 'right_gripper', look_up_t, rospy.Duration(3))
+        pos, ori = listener.lookupTransform('base', 'right_gripper', look_up_t)
+        base_to_pose_mat = listener.fromTranslationRotation(pos, ori) 
+
+        pose = Pose()
+        pose.position.x = pos[0]
+        pose.position.y = pos[1]
+        pose.position.z = pos[2]
+        pose.orientation.x = ori[0]
+        pose.orientation.y = ori[1]
+        pose.orientation.z = ori[2]
+        pose.orientation.w = ori[3]
+
+        pose.position.x += (0.05+place_hover_height)*base_to_pose_mat[0, 2]
+        pose.position.y += (0.05+place_hover_height)*base_to_pose_mat[1, 2]
+        pose.position.z += (0.05+place_hover_height)*base_to_pose_mat[2, 2]
+        return pose
+
+    def determine_successor(self): # Determine next state
+        DeterminePlacePose.already_plac_count += 1
+        return 'Successful'
+
 def assembly_user_defined_sm():  # interface
     sm = smach.StateMachine(outcomes=['TaskFailed', 'TaskSuccessful'])
     with sm:
@@ -380,4 +565,37 @@ def assembly_user_defined_sm():  # interface
                 'Successful': MoveToHomePose.__name__
             }
         )
+        smach.StateMachine.add(
+            ChangePickPose_1.__name__,
+            ChangePickPose_1(),
+            transitions={
+                'Successful': MoveToPrePickPoseWithFullHand.__name__
+            }
+        )
+
+        smach.StateMachine.add(
+            ChangePickPose_2.__name__,
+            ChangePickPose_2(),
+            transitions={
+                'Successful': MoveToPrePickPoseWithFullHand.__name__
+            }
+        )
+
+        smach.StateMachine.add(
+            AvoidWallCollision.__name__,
+            AvoidWallCollision(),
+            transitions={
+                'Successful': Place.__name__
+            }
+        )
+
+        smach.StateMachine.add(
+            ChangePlacePose_1.__name__,
+            ChangePlacePose_1(),
+            transitions={
+                'Successful': Place.__name__
+            }
+        )
+
+        
     return sm

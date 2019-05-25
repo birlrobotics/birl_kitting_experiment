@@ -10,6 +10,9 @@ from birl_kitting_experiment.hardcoded_data import (
     reverting_statistics
 )
 
+from birl_kitting_experiment.Q_table import (
+    Q_table_statistics
+)
 if __name__ == '__main__':
     sm = assembly_user_defined_sm()
-    smach_runner.run(sm, reverting_statistics)
+    smach_runner.run(sm, Q_table_statistics)
