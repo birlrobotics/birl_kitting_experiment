@@ -32,7 +32,7 @@ dmp_model_dir = os.path.join(dir_of_this_script, '..', '..', 'data', 'dmp_models
 SIM_MODE = False
 pick_hover_height = 0.15
 place_step_size = 0.0
-place_hover_height = 0.15
+place_hover_height = 0.03 # high wall (0.05 -> h3)
 
 class MoveToHomePose(smach.State):
     def __init__(self):
@@ -407,6 +407,7 @@ class ChangePickPose_2(smach.State):
             pass
 
         pose = copy.deepcopy(DeterminePickPose.pick_pose)
+        pose.position.y -= 0.03
         return pose
 
     def determine_successor(self): # Determine next state
@@ -466,11 +467,11 @@ class ChangePlacePose_1(smach.State):
        return dmp_execute.get_dmp_plan(robot, group, dmp_model, original_pose_goal, goal_modification_info)
         
     def get_adaptation_dmp_model(self):
-        dmp_model_path = os.path.join(latest_model_folder, 'tag_1001', 'dmp_model')
+        dmp_model_path = os.path.join(latest_model_folder, 'tag_1002', 'dmp_model')
         return dill.load(open(dmp_model_path, 'r'))
         
     def get_modified_goal_info(self):
-        goal_modification_info_path = os.path.join(latest_model_folder, 'tag_1001', 'goal_modification_info')
+        goal_modification_info_path = os.path.join(latest_model_folder, 'tag_1002', 'goal_modification_info')
         return dill.load(open(goal_modification_info_path, 'r'))
 
     def get_pose_goal(self):

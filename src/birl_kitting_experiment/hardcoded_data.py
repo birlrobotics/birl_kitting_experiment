@@ -6,7 +6,9 @@ from geometry_msgs.msg import (
 place_pose = Pose()
 place_pose.position.x = 0.441
 place_pose.position.y = -0.635
-place_pose.position.z = -0.05
+# place_pose.position.z = 0.0 # low wall position
+place_pose.position.z = 0.06 # high wall position (0.06 ->h6)
+
 place_pose.orientation.x= 0.999
 place_pose.orientation.y= -0.046
 place_pose.orientation.z= 0.04

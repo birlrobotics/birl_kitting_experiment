@@ -28,6 +28,7 @@
     ```bash
     [Open a new terminal]
     rosrun birl_baxter_online_urdf_update update_urdf.py
+    ssh ruser@011405P0002.local
     rosrun baxter_interface joint_trajectory_action_server.py
     roslaunch birl_moveit_r_ft_config birl_baxter_gripper.launch
     ```
