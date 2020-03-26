@@ -3,7 +3,10 @@
 # How To Run
 
 1. Launch real or sim Baxter
-
+    ```
+    roslaunch baxter_gazebo baxter_world.launch
+    rosrun baxter_tools enable_robot.py -e
+    ```
 1. Launch camera image publication:
 
     ```bash
