@@ -47,11 +47,7 @@
     [Open a new terminal]
     rosrun smach_based_introspection_framework timeseries_publisher.py
     ```
-    
-1. Publish the state switch and tag_multimodal_topic_and_service
-   ```
-   rosrun smach_based_introspection_framework tag_multimodal_topic_and_service.py
-   ```
+
 
 1.ssh command:
     ```
